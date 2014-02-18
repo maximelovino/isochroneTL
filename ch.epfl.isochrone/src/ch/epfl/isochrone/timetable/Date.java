@@ -64,8 +64,53 @@ public final class Date {
         
     }
     
-    private static Month inToMonth(int m){
+    private static Month intToMonth(int m) throws IllegalArgumentException{
         
+        if(m<1||m>12){
+            throw new IllegalArgumentException();
+        }
+        
+        Month month=Month.JANUARY;
+        
+        switch(m){
+        case 1:
+            break;
+        case 2:
+            month= Month.FEBRUARY;
+            break;
+        case 3:
+            month= Month.MARCH;
+            break;
+        case 4:
+            month=Month.APRIL;
+            break;
+        case 5:
+            month=Month.MAY;
+            break;
+        case 6:
+            month=Month.JUNE;
+            break;
+        case 7:
+            month=Month.JULY;
+            break;
+        case 8:
+            month=Month.AUGUST;
+            break;
+        case 9:
+            month=Month.SEPTEMBER;
+            break;
+        case 10:
+            month=Month.OCTOBER;
+            break;
+        case 11:
+            month=Month.NOVEMBER;
+            break;
+        case 12:
+            month=Month.DECEMBER;
+            break;            
+        }
+        
+        return month;
     }
     
     private static int monthToInt(Month m){
@@ -115,11 +160,29 @@ public final class Date {
     }
     
     private static boolean isLeapYear(int y){
-        
+        return ((y%4==0 && y%100!=0)||y%400==0);
     }
     
     private static int daysInMonth(Month m, int y){
         
+        int days=0;
+        switch(m){
+        case JANUARY: case MARCH: case MAY: case JULY: case AUGUST: case OCTOBER: case DECEMBER:
+            days= 31;
+            break;
+        case APRIL: case JUNE: case SEPTEMBER: case NOVEMBER:
+            days= 30;
+            break;
+        case FEBRUARY:
+            if(isLeapYear(y)){
+                days= 29;
+            }else{
+                days=28;
+            }
+            break;            
+        }
+        
+        return days;
     }
     
     private static int dateToFixed(int d, Month m, int y){
