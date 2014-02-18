@@ -1,5 +1,7 @@
 package ch.epfl.isochrone.timetable;
 
+import static ch.epfl.isochrone.math.Math.*;
+
 public final class Date {
 
     private final int day;
@@ -28,12 +30,11 @@ public final class Date {
     }
     
     public int intMonth(){
-            
-       
+        return monthToInt(month);       
     }
     
     public int year(){
-        
+        return year;
     }
     
     public DayOfWeek dayOfWeek(){
@@ -160,7 +161,7 @@ public final class Date {
     }
     
     private static boolean isLeapYear(int y){
-        return ((y%4==0 && y%100!=0)||y%400==0);
+        return ((modF(y,4)==0 && modF(y,100)!=0)||modF(y,400)==0);
     }
     
     private static int daysInMonth(Month m, int y){
@@ -186,15 +187,62 @@ public final class Date {
     }
     
     private static int dateToFixed(int d, Month m, int y){
+        int y0=y-1;
+        int c;
+        if(monthToInt(m)<=2){
+            c=0;
+        }else if(monthToInt(m)>2 && isLeapYear(y)){
+            c=-1;
+        }else{
+            c=-2;
+        }
         
+        int g=365*y0+divF(y0,4)-divF(y0,100)+divF(y0,400)+divF((367*monthToInt(m)-362),12)+c+d;
+        
+        return g;
     }
     
     private static Date fixedToDate(int n){
         
+        int d0=n-1;
+        int n400=divF(d0,146097);
+        int d1=modF(d0,146097);
+        int n100=divF(d1,36524);
+        int d2=modF(d1,36524);
+        int n4=divF(d2,1461);
+        int d3=modF(d2,1461);
+        int n1=divF(d3,365);
+        int y0=400*n400+100*n100+4*n4+n1;
+        
+        int y;
+        
+        if(n100==4||n1==4){
+            y=y0;
+        }else{
+            y=y0+1;
+        }
+        
+        int p=n-dateToFixed(1,intToMonth(1),y);
+        int c;
+        
+        if(n<dateToFixed(1,intToMonth(3),y)){
+            c=0;
+        }else if(n>=dateToFixed(1,intToMonth(3),y) && isLeapYear(y)){
+            c=1;
+        }else{
+            c=2;
+        }
+        
+        int m=divF((12*(p+c)+373),367);
+        
+        int d=n-dateToFixed(1,intToMonth(m),y)+1;
+        
+        return new Date(d,m,y);     
+        
     }
     
     private int fixed(){
-        
+        return dateToFixed(this.day(),this.month(),this.year());
     }
     
     
