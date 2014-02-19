@@ -2,12 +2,29 @@ package ch.epfl.isochrone.timetable;
 
 import static ch.epfl.isochrone.math.Math.*;
 
+/**
+ * A date
+ * 
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class Date {
 
     private final int day;
     private final Month month;
     private final int year;
     
+    /**
+     * @param day
+     *      The day in numeric format
+     * @param month
+     *      The month in Month format
+     * @param year
+     *      The year in numeric format
+     * @throws IllegalArgumentException
+     *      if the day is smaller than 1 or bigger than the number of days in that month of that year
+     */
     public Date (int day, Month month, int year) throws IllegalArgumentException{
         if(day<1||day>daysInMonth(month,year)){
             throw new IllegalArgumentException();
@@ -19,30 +36,57 @@ public final class Date {
         
     }
     
+    /**
+     * @param day
+     *      The day in numeric format
+     * @param month
+     *      The month in numeric format
+     * @param year
+     *      The year in numeric format
+     */
     public Date (int day, int month, int year){
         this(day, intToMonth(month), year);
     }
     
+    /**
+     * @param date
+     *      A date in format java.util.Date
+     */
     public Date(java.util.Date date){        
         this(date.getDate(),intToMonth(date.getMonth()+1),date.getYear()+1900);
     }
     
+    /**
+     * @return the day in numeric format
+     */
     public int day(){
        return day; 
     }
     
+    /**
+     * @return the month in month format
+     */
     public Month month(){
         return month;
     }
     
+    /**
+     * @return the month in numeric format
+     */
     public int intMonth(){
         return monthToInt(month);       
     }
     
+    /**
+     * @return the year in numeric format
+     */
     public int year(){
         return year;
     }
     
+    /**
+     * @return the day of the week that the date was on
+     */
     public DayOfWeek dayOfWeek(){
         int k=modF(dateToFixed(day,month,year),7);
         
@@ -76,18 +120,32 @@ public final class Date {
         return dayWeek;
     }
     
+    /**
+     * @param daysDiff
+     *      The days difference that we want the new date to be from the date
+     * @return A date distant of daysDiff from the instance
+     */
     public Date relative(int daysDiff){
         return fixedToDate(this.fixed()+daysDiff);
     }
     
+    /**
+     * @return the instance in the format java.util.Date
+     */
     public java.util.Date toJavaDate(){
         return new java.util.Date(this.year()-1900,this.intMonth()-1,this.day);
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString(){
         return String.format("%04d-%02d-%02d",this.year(),this.intMonth(),this.day());
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object that){
         if (that instanceof Date){
             if(this.compareTo((Date)that)==0){
@@ -100,10 +158,19 @@ public final class Date {
         }
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     public int hashCode(){
         return this.fixed();
     }
     
+    /**
+     * @param that
+     *      The date that we want to compare to
+     * @return
+     *      -1 if the instance is before the date in parameter , 0 if it's the same date, 1 if it's after
+     */
     public int compareTo(Date that){
         if(this.fixed()<that.fixed()){
             return -1;
@@ -115,6 +182,13 @@ public final class Date {
     }
     
     
+    /**
+     * @param m
+     *      A month in numeric format
+     * @return The month in Month format
+     * @throws IllegalArgumentException
+     *      If m is not in [1,12]
+     */
     private static Month intToMonth(int m) throws IllegalArgumentException{
         
         if(m<1||m>12){
@@ -164,6 +238,11 @@ public final class Date {
         return month;
     }
     
+    /**
+     * @param m
+     *      A month in Month format
+     * @return The month in numeric format
+     */
     private static int monthToInt(Month m){
         
         int i=0;
@@ -210,10 +289,22 @@ public final class Date {
         
     }
     
+    /**
+     * @param y
+     *      A year in numeric format
+     * @return true if it's a leap year, false otherwise
+     */
     private static boolean isLeapYear(int y){
         return ((modF(y,4)==0 && modF(y,100)!=0)||modF(y,400)==0);
     }
     
+    /**
+     * @param m
+     *      A month in Month format
+     * @param y
+     *      A year in numeric format
+     * @return The number of days in that month of that year
+     */
     private static int daysInMonth(Month m, int y){
         
         int days=0;
@@ -236,6 +327,15 @@ public final class Date {
         return days;
     }
     
+    /**
+     * @param d
+     *      A day in numeric format
+     * @param m
+     *      A month in Month format
+     * @param y
+     *      A year in numeric format
+     * @return The date in fixed format (number of days since 1 Jan 1)
+     */
     private static int dateToFixed(int d, Month m, int y){
         int y0=y-1;
         int c;
@@ -252,6 +352,11 @@ public final class Date {
         return g;
     }
     
+    /**
+     * @param n
+     *      A date in fixed format
+     * @return A date in Date format
+     */
     private static Date fixedToDate(int n){
         
         int d0=n-1;
@@ -291,15 +396,32 @@ public final class Date {
         
     }
     
+    /**
+     * @return The fixed format of the instance
+     */
     private int fixed(){
         return dateToFixed(this.day(),this.month(),this.year());
     }
     
     
+    /**
+     * An enumeration of the days of the week
+     * 
+     * @author Maxime Lovino (236726)
+     * @author Julie Djeffal (193164)
+     *
+     */
     public enum DayOfWeek{
         MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
     }
     
+    /**
+     * An enumeration of the months of the year
+     * 
+     * @author Maxime Lovino (236726)
+     * @author Julie Djeffal (193164)
+     *
+     */
     public enum Month{
         JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
     }

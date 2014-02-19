@@ -4,20 +4,25 @@ import static java.lang.Math.*;
 
 
 /**
+ * Math utilities
+ * 
  * @author Maxime Lovino (236726)
  * @author Julie Djeffal (193164)
  *
  */
 public final class Math {
     
+    /**
+     * Empty constructor so that the class can't be instantiate
+     */
     private Math(){
         
     }
 
     /**
      * @param x
-     *      Le nombre dont on calcule l'arcsinh
-     * @return L'arcsinh d'un nombre
+     *      The number that we want to calculate the arcsinh of
+     * @return arcsinh(x)
      */
     public static double asinh(double x){
         double y=log(x+sqrt(1+pow(x, 2)));
@@ -26,8 +31,8 @@ public final class Math {
     
     /**
      * @param x
-     *      Le nombre dont on calcule l'haversin
-     * @return L'haversin d'un nombre
+     *      The number that we want to calculate the haversin of
+     * @return haversin(x)
      */
     public static double haversin(double x){
         double y= pow(sin(x/2), 2);
@@ -37,10 +42,10 @@ public final class Math {
     
     /**
      * @param n
-     *      Le dividende
+     *      The dividend
      * @param d
-     *      Le diviseur
-     * @return Le quotient de la division par défaut
+     *      The divisor
+     * @return The quotient of the division by default
      */
     public static int divF(int n, int d){
         int i;
@@ -58,10 +63,10 @@ public final class Math {
     
     /**
      * @param n
-     *      Le dividende
+     *      The dividend
      * @param d
-     *      Le diviseur
-     * @return Le reste de la division par défaut
+     *      The divisor
+     * @return The rest of the division by default
      */
     public static int modF(int n, int d){
         int i;
