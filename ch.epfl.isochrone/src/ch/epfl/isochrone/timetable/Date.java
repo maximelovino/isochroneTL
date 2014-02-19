@@ -81,7 +81,7 @@ public final class Date {
     }
     
     public java.util.Date toJavaDate(){
-        return new java.util.Date(this.year(),this.intMonth(),this.day);
+        return new java.util.Date(this.year()-1900,this.intMonth()-1,this.day);
     }
     
     public String toString(){
