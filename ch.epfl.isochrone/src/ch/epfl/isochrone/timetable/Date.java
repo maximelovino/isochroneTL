@@ -44,7 +44,7 @@ public final class Date {
     }
     
     public DayOfWeek dayOfWeek(){
-        int k=modF(day,7);
+        int k=modF(dateToFixed(day,month,year),7);
         
         DayOfWeek dayWeek=DayOfWeek.MONDAY;
         
