@@ -10,11 +10,19 @@ public final class Date {
     private final int date;
     
     public Date (int day, Month month, int year) throws IllegalArgumentException{
+        if(day<1||day>daysInMonth(month,year)){
+            throw new IllegalArgumentException();
+        }
         
+        this.day=day;
+        this.month=month;
+        this.year=year;
+        
+        this.date=dateToFixed(day,month,year);
     }
     
-    public Date (int day, int month, int year) throws IllegalArgumentException{
-        
+    public Date (int day, int month, int year){
+        this(day, intToMonth(month), year);
     }
     
     public Date(java.util.Date date){
@@ -38,7 +46,36 @@ public final class Date {
     }
     
     public DayOfWeek dayOfWeek(){
+        int k=modF(day,7);
         
+        DayOfWeek dayWeek=DayOfWeek.MONDAY;
+        
+//      Sunday at 0
+        switch(k){
+        case 0:
+            dayWeek=DayOfWeek.SUNDAY;
+            break;
+        case 1:
+            dayWeek=DayOfWeek.MONDAY;
+            break;
+        case 2:
+            dayWeek=DayOfWeek.TUESDAY;
+            break;
+        case 3:
+            dayWeek=DayOfWeek.WEDNESDAY;
+            break;
+        case 4:
+            dayWeek=DayOfWeek.THURSDAY;
+            break;
+        case 5:
+            dayWeek=DayOfWeek.FRIDAY;
+            break;
+        case 6:
+            dayWeek=DayOfWeek.SATURDAY;
+            break;
+        }
+        
+        return dayWeek;
     }
     
     public Date relative(int daysDiff){
@@ -50,20 +87,35 @@ public final class Date {
     }
     
     public String toString(){
-        
+        return String.format("%04d-%02d-%02d",this.year(),this.intMonth(),this.day());
     }
     
     public boolean equals(Object that){
-        
+        if (that instanceof Date){
+            if(this.compareTo((Date)that)==0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
     
     public int hashCode(){
-        
+        return this.fixed();
     }
     
     public int compareTo(Date that){
-        
+        if(this.fixed()<that.fixed()){
+            return -1;
+        }else if(this.fixed()==that.fixed()){
+            return 0;
+        }else{
+            return 1;
+        }
     }
+    
     
     private static Month intToMonth(int m) throws IllegalArgumentException{
         
