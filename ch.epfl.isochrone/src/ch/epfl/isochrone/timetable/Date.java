@@ -7,7 +7,6 @@ public final class Date {
     private final int day;
     private final Month month;
     private final int year;
-    private final int date;
     
     public Date (int day, Month month, int year) throws IllegalArgumentException{
         if(day<1||day>daysInMonth(month,year)){
@@ -18,15 +17,14 @@ public final class Date {
         this.month=month;
         this.year=year;
         
-        this.date=dateToFixed(day,month,year);
     }
     
     public Date (int day, int month, int year){
         this(day, intToMonth(month), year);
     }
     
-    public Date(java.util.Date date){
-        
+    public Date(java.util.Date date){        
+        this(date.getDate(),intToMonth(date.getMonth()+1),date.getYear()+1900);
     }
     
     public int day(){
@@ -79,11 +77,11 @@ public final class Date {
     }
     
     public Date relative(int daysDiff){
-        
+        return fixedToDate(this.fixed()+daysDiff);
     }
     
     public java.util.Date toJavaDate(){
-        
+        return new java.util.Date(this.year(),this.intMonth(),this.day);
     }
     
     public String toString(){
