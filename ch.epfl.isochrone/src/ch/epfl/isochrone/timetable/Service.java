@@ -1,43 +1,66 @@
 package ch.epfl.isochrone.timetable;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 
 public final class Service {
-
-
+    
+    private final String name;
+    private final Date startingDate;
+    private final Date endingDate;
+    private final Set<Date.DayOfWeek> operatingDays;
+    private final Set<Date> excludedDates;
+    private final Set<Date> includedDates;
+    
     public Service(String name, Date startingDate, Date endingDate, Set<Date.DayOfWeek> operatingDays, Set<Date> excludedDates, Set<Date> includedDates){
-        Builder b=new Builder(name, startingDate, endingDate);
-
-        for(Iterator<Date.DayOfWeek> it=operatingDays.iterator();it.hasNext();){
-            Date.DayOfWeek d=it.next();
-            b.addOperatingDay(d);
-        }
-
-        for(Iterator<Date> it=excludedDates.iterator();it.hasNext();){
-            Date d=it.next();
-            b.addExcludedDate(d);
-        }
-
-        for(Iterator<Date> it=includedDates.iterator();it.hasNext();){
-            Date d=it.next();
-            b.addIncludedDate(d);
-        }
         
-        b.build();
+        this.name=name;
+        this.startingDate=startingDate;
+        this.endingDate=endingDate;
+        this.operatingDays= new HashSet<Date.DayOfWeek>(operatingDays);
+        this.excludedDates=new HashSet<Date>(excludedDates);
+        this.includedDates=new HashSet<Date>(includedDates);
+        
     }
 
     public String name(){
-        
+        return this.name;
     }
 
     public boolean isOperatingOn(Date date){
-
+        boolean operating=false;
+        
+        if(date.compareTo(this.startingDate)!=-1 && date.compareTo(this.endingDate)!=1){
+            operating=true;
+        }
+        
+        if(excludedDates.contains(date)){
+            operating=false;
+        }
+        
+        if(includedDates.contains(date)){
+            operating=true;
+        }
+        
+//        for(Iterator<Date> it=excludedDates.iterator();it.hasNext();){
+//            Date d=it.next();
+//            if(d.equals(date)){
+//                operating=false;
+//            }
+//        }
+//        
+//        for(Iterator<Date> it=includedDates.iterator();it.hasNext();){
+//            Date d=it.next();
+//            if(d.equals(date)){
+//                operating=true;
+//            }
+//        }
+        
+        return operating;
     }
 
     public String toString(){
-
+        return name();
     }
 
     public static class Builder{
@@ -69,11 +92,19 @@ public final class Service {
         }
 
         public Builder addExcludedDate(Date date){
+            if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||includedDates.contains(date)){
+                throw new IllegalArgumentException();
+            }
+            
             excludedDates.add(date);
             return this;
         }
 
         public Builder addIncludedDate(Date date){
+            if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||excludedDates.contains(date)){
+                throw new IllegalArgumentException();
+            }      
+            
             includedDates.add(date);
             return this;
         }
