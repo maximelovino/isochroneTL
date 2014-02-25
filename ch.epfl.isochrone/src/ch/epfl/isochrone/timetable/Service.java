@@ -72,7 +72,7 @@ public final class Service {
         private final Set<Date> includedDates=new HashSet<Date>();
 
 
-        public Builder(String name, Date startingDate, Date endingDate){
+        public Builder(String name, Date startingDate, Date endingDate) throws IllegalArgumentException{
             if(startingDate.compareTo(endingDate)==1){
                 throw new IllegalArgumentException();
             }
@@ -91,7 +91,7 @@ public final class Service {
             return this;
         }
 
-        public Builder addExcludedDate(Date date){
+        public Builder addExcludedDate(Date date) throws IllegalArgumentException{
             if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||includedDates.contains(date)){
                 throw new IllegalArgumentException();
             }
@@ -100,7 +100,7 @@ public final class Service {
             return this;
         }
 
-        public Builder addIncludedDate(Date date){
+        public Builder addIncludedDate(Date date) throws IllegalArgumentException{
             if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||excludedDates.contains(date)){
                 throw new IllegalArgumentException();
             }      
