@@ -4,6 +4,9 @@ import java.util.Collections;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.junit.Assert.*;
+
+import com.sun.source.tree.AssertTree;
 
 import ch.epfl.isochrone.timetable.Date.DayOfWeek;
 import ch.epfl.isochrone.timetable.Date.Month;
@@ -33,4 +36,26 @@ public class TestService {
     }
 
     // A compléter avec de véritables méthodes de test...
+    
+    @Test(expected = java.lang.IllegalArgumentException.class)
+    public void testConstructeurStartingDateAfterEndingDate () {
+        Date debut = new Date (23, Month.JANUARY, 2014); 
+        Date fin = new Date (10, Month.JANUARY, 2014);
+        new Service.Builder("Erreur Date", debut, fin);
+    }
+    
+    @Test
+    public void excludedIncludedDate() {
+        Date debut = new Date (01, Month.JANUARY, 2014); 
+        Date fin = new Date (31, Month.DECEMBER, 2014);
+        Service.Builder sb = new Service.Builder("s", debut, fin);
+        
+        sb.addIncludedDate(new Date(02, Month.APRIL, 2014));
+        
+        try {
+            sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
+        } catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+    }
 }
