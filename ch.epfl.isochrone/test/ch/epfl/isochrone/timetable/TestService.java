@@ -33,7 +33,6 @@ public class TestService {
         sb.build();
     }
 
-    // A compléter avec de véritables méthodes de test...
     
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void testConstructeurStartingDateAfterEndingDate () {
