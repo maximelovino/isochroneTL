@@ -41,18 +41,58 @@ public class TestService {
         new Service.Builder("Erreur Date", debut, fin);
     }
     
-    @Test
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void excludedIncludedDate() {
         Date debut = new Date (01, Month.JANUARY, 2014); 
         Date fin = new Date (31, Month.DECEMBER, 2014);
         Service.Builder sb = new Service.Builder("s", debut, fin);
         
         sb.addIncludedDate(new Date(02, Month.APRIL, 2014));
+        sb.addExcludedDate(new Date(02, Month.APRIL,2014));
+//        try {
+//            sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
+//        } catch (IllegalArgumentException e) {
+//            assertTrue(true);
+//        }
+    }
+    
+    @Test(expected = java.lang.IllegalArgumentException.class)
+    public void includedExcludedDate(){
+        Date debut = new Date (01, Month.JANUARY, 2014); 
+        Date fin = new Date (31, Month.DECEMBER, 2014);
+        Service.Builder sb = new Service.Builder("s", debut, fin);
         
-        try {
-            sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
-        } catch (IllegalArgumentException e) {
-            assertTrue(true);
-        }
+        sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
+        sb.addIncludedDate(new Date(02, Month.APRIL,2014));
+//        try {
+//            sb.addIncludedDate(new Date(02, Month.APRIL, 2014));
+//        } catch (IllegalArgumentException e) {
+//            assertTrue(true);
+//        }
+    }
+    
+    @Test
+    public void testOperatingOn(){
+        Date debut = new Date (01, Month.JANUARY, 2014); 
+        Date fin = new Date (31, Month.DECEMBER, 2014);
+        Service.Builder sb = new Service.Builder("s", debut, fin);
+        Date test=new Date(1,Month.MARCH,2014);
+        
+       sb.addOperatingDay(DayOfWeek.SATURDAY);
+       Service service=sb.build();
+       assertTrue(service.isOperatingOn(test));
+    }
+    
+    @Test
+    public void testNotOperatingOn(){
+        Date debut = new Date (01, Month.JANUARY, 2014); 
+        Date fin = new Date (31, Month.DECEMBER, 2014);
+        Service.Builder sb = new Service.Builder("s", debut, fin);
+        Date test=new Date(1,Month.MARCH,2014);
+        
+       sb.addOperatingDay(DayOfWeek.SATURDAY);
+       sb.addExcludedDate(test);
+       Service service=sb.build();
+       assertFalse(service.isOperatingOn(test));
     }
 }

@@ -30,7 +30,7 @@ public final class Service {
     public boolean isOperatingOn(Date date){
         boolean operating=false;
         
-        if(date.compareTo(this.startingDate)!=-1 && date.compareTo(this.endingDate)!=1){
+        if(date.compareTo(this.startingDate)!=-1 && date.compareTo(this.endingDate)!=1 && operatingDays.contains(date.dayOfWeek())){
             operating=true;
         }
         
