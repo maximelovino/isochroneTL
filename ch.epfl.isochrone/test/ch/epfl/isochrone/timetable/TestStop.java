@@ -1,5 +1,7 @@
 package ch.epfl.isochrone.timetable;
 
+import static org.junit.Assert.*;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -18,4 +20,17 @@ public class TestStop {
     }
 
     // A compléter avec de véritables méthodes de test...
+    
+    @Test
+    public void testNameGetter(){
+        Stop test = new Stop("test", new PointWGS84(1, 1));
+        String s=test.name();
+        boolean x=s.equals("test");
+        assertTrue(x);
+    }
+    
+    @Test(expected=java.lang.IllegalArgumentException.class)
+    public void invalidPosition(){
+        Stop s = new Stop("invalid", new PointWGS84(6.57, 46.52));                
+    }
 }
