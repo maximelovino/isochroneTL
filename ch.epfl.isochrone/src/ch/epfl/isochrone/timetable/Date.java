@@ -139,6 +139,7 @@ public final class Date {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString(){
         return String.format("%04d-%02d-%02d",this.year(),this.intMonth(),this.day());
     }
@@ -146,6 +147,7 @@ public final class Date {
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object that){
         if (that instanceof Date){
             if(this.compareTo((Date)that)==0){
@@ -161,6 +163,7 @@ public final class Date {
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode(){
         return this.fixed();
     }

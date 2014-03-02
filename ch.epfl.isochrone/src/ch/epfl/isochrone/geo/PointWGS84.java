@@ -80,6 +80,7 @@ public final class PointWGS84 {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString(){
         return "("+toDegrees(longitude)+","+toDegrees(latitude)+")";        
     }

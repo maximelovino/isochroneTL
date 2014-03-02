@@ -49,11 +49,6 @@ public class TestService {
         
         sb.addIncludedDate(new Date(02, Month.APRIL, 2014));
         sb.addExcludedDate(new Date(02, Month.APRIL,2014));
-//        try {
-//            sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
-//        } catch (IllegalArgumentException e) {
-//            assertTrue(true);
-//        }
     }
     
     @Test(expected = java.lang.IllegalArgumentException.class)
@@ -64,11 +59,6 @@ public class TestService {
         
         sb.addExcludedDate(new Date(02, Month.APRIL, 2014));
         sb.addIncludedDate(new Date(02, Month.APRIL,2014));
-//        try {
-//            sb.addIncludedDate(new Date(02, Month.APRIL, 2014));
-//        } catch (IllegalArgumentException e) {
-//            assertTrue(true);
-//        }
     }
     
     @Test

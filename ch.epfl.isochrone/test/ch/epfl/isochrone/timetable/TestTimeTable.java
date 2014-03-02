@@ -1,6 +1,7 @@
 package ch.epfl.isochrone.timetable;
 
 import java.util.Collections;
+import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,4 +31,18 @@ public class TestTimeTable {
     }
 
     // A compléter avec de véritables méthodes de test...
+    @Test (expected= java.lang.UnsupportedOperationException.class)
+    public void testImmuabilite(){
+        TimeTable.Builder b= new TimeTable.Builder();
+        b.addStop(new Stop("s", new PointWGS84(1,1)));
+        
+        Service.Builder s= new Service.Builder("test", new Date(1, Month.JANUARY, 2014), new Date(31, Month.DECEMBER, 2014));
+        s.addOperatingDay(DayOfWeek.WEDNESDAY);
+        Service testService=s.build();
+        b.addService(testService);
+        
+        TimeTable testTable=b.build();
+        Set<Stop> stops=testTable.stops();
+        stops.clear();
+    }
 }
