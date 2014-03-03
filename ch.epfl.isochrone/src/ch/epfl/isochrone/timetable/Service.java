@@ -93,9 +93,9 @@ public final class Service {
         private final String name;
         private final Date startingDate;
         private final Date endingDate;
-        private final Set<Date.DayOfWeek> operatingDays=new HashSet<Date.DayOfWeek>();;
-        private final Set<Date> excludedDates=new HashSet<Date>();
-        private final Set<Date> includedDates=new HashSet<Date>();
+        private final Set<Date.DayOfWeek> operatingDays;
+        private final Set<Date> excludedDates;
+        private final Set<Date> includedDates;
 
 
         /**
@@ -116,6 +116,9 @@ public final class Service {
             this.name=name;
             this.startingDate=startingDate;
             this.endingDate=endingDate;
+            this.operatingDays=new HashSet<Date.DayOfWeek>();
+            this.excludedDates=new HashSet<Date>();
+            this.includedDates=new HashSet<Date>();
         }
 
         /**
