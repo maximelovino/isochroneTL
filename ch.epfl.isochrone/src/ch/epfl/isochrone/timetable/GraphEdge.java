@@ -83,7 +83,7 @@ final class GraphEdge {
      *      The arrival time decoded
      */
     public static int unpackTripArrivalTime(int packedTrip){
-        return unpackDepartureTime(packedTrip)+unpackTripDuration(packedTrip);
+        return unpackTripDepartureTime(packedTrip)+unpackTripDuration(packedTrip);
     }
 
     /**
@@ -106,10 +106,10 @@ final class GraphEdge {
             index=(index+1)*-1;
         }
 
-        if (this.walkingTime+departureTime<unpackArrivalTime(packedTrips.get(index))){
+        if (this.walkingTime+departureTime<unpackTripArrivalTime(packedTrips.get(index))){
             return walkingTime+departureTime;
         }else{
-            return unpackArrivalTime(packedTrips.get(index));
+            return unpackTripArrivalTime(packedTrips.get(index));
         }
     }
 
