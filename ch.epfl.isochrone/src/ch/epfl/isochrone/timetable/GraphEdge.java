@@ -1,7 +1,6 @@
 package ch.epfl.isochrone.timetable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +15,6 @@ final class GraphEdge {
     public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips) throws IllegalArgumentException{
         this.destination=destination;
         this.walkingTime=walkingTime;
-//        this.packedTrips=new HashSet(packedTrips);
         this.packedTrips=new ArrayList<Integer>(packedTrips);
         Collections.sort(this.packedTrips);        
     }
