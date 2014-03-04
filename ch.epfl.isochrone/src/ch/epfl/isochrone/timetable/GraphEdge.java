@@ -62,7 +62,7 @@ final class GraphEdge {
      * @return
      *      The departure time decoded
      */
-    public static int unpackDepartureTime(int packedTrip){
+    public static int unpackTripDepartureTime(int packedTrip){
         return divF(packedTrip,10000);
     }
 
@@ -82,7 +82,7 @@ final class GraphEdge {
      * @return
      *      The arrival time decoded
      */
-    public static int unpackArrivalTime(int packedTrip){
+    public static int unpackTripArrivalTime(int packedTrip){
         return unpackDepartureTime(packedTrip)+unpackTripDuration(packedTrip);
     }
 
