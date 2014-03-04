@@ -1,18 +1,24 @@
 package ch.epfl.isochrone.timetable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import static ch.epfl.isochrone.math.Math.*;
 
 final class GraphEdge {
-    private final Set<Integer> packedTrips;
+    private final ArrayList<Integer> packedTrips;
     private final Stop destination;
     private final int walkingTime;
     
     public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips) throws IllegalArgumentException{
         this.destination=destination;
         this.walkingTime=walkingTime;
-        this.packedTrips=new HashSet(packedTrips);
+//        this.packedTrips=new HashSet(packedTrips);
+        this.packedTrips=new ArrayList<Integer>(packedTrips);
+        Collections.sort(this.packedTrips);        
     }
     
     public static int packTrip(int departureTime, int arrivalTime) throws IllegalArgumentException{
@@ -45,7 +51,18 @@ final class GraphEdge {
     }
     
     public int earliestArrivalTime(int departureTime){
+//      binary search: O(log(n)) complexity
+        int index=Collections.binarySearch(this.packedTrips,departureTime);
         
+        if(index<0){
+            index=(index+1)*-1;
+        }
+        
+        if (this.walkingTime+departureTime<unpackArrivalTime(packedTrips.get(index))){
+            return walkingTime+departureTime;
+        }else{
+            return unpackArrivalTime(packedTrips.get(index));
+        }
     }
     
     public static class Builder{
