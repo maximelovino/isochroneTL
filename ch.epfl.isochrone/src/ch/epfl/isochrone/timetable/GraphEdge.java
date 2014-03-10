@@ -99,6 +99,9 @@ final class GraphEdge {
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
     public int earliestArrivalTime(int departureTime){
+        if (this.walkingTime==-1){
+            return SecondsPastMidnight.INFINITE;
+        }
         //      binary search: O(log(n)) complexity
         int index=Collections.binarySearch(this.packedTrips,departureTime);
 
