@@ -14,7 +14,6 @@ public class TestGraphEdge {
     // laquelle il est ignoré (annotation @Ignore). Son seul but est de garantir
     // que les noms des classes et méthodes sont corrects.
     @Test
-    @Ignore
     public void namesAreOk() {
         int i1 = GraphEdge.packTrip(0, 0);
         i1 = GraphEdge.unpackTripDepartureTime(0);
@@ -55,16 +54,13 @@ public class TestGraphEdge {
         c.addTrip(SecondsPastMidnight.fromHMS(9, 30, 0),SecondsPastMidnight.fromHMS(9, 50, 0));
         GraphEdge g=b.build();
         
-        int w=g.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 30, 0));
-        assertTrue(w==SecondsPastMidnight.INFINITE);
+        int w=g.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 40, 0));
+        assertEquals(SecondsPastMidnight.INFINITE,w);
         c.setWalkingTime(SecondsPastMidnight.fromHMS(0, 25, 0));
         GraphEdge h=c.build();
         int x=h.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 10, 0));
-        assertTrue(x==SecondsPastMidnight.fromHMS(9, 30, 0));
+        assertEquals(SecondsPastMidnight.fromHMS(9, 30, 0),x);
         int y=h.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 30, 0));
-//        int z=g.earliestArrivalTime(200);
-        assertTrue(y==SecondsPastMidnight.fromHMS(9, 50, 0));
-//        assertTrue(y==270);
-//        assertTrue(z==250);        
+        assertEquals(SecondsPastMidnight.fromHMS(9, 50, 0),y);
     }
 }
