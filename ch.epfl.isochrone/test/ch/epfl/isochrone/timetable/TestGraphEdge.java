@@ -62,5 +62,7 @@ public class TestGraphEdge {
         assertEquals(SecondsPastMidnight.fromHMS(9, 30, 0),x);
         int y=h.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 30, 0));
         assertEquals(SecondsPastMidnight.fromHMS(9, 50, 0),y);
+        int z=h.earliestArrivalTime(SecondsPastMidnight.fromHMS(9, 12, 0));
+        assertEquals(SecondsPastMidnight.fromHMS(9, 37, 0),z);
     }
 }
