@@ -99,7 +99,7 @@ final class GraphEdge {
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
     public int earliestArrivalTime(int departureTime){
-        if (this.walkingTime==-1){
+        if (this.walkingTime==-1 && unpackTripDepartureTime(this.packedTrips.get(this.packedTrips.size()-1))<departureTime){
             return SecondsPastMidnight.INFINITE;
         }
         //      binary search: O(log(n)) complexity
@@ -108,9 +108,10 @@ final class GraphEdge {
         if(index<0){
             index=(index+1)*-1;
         }
+        
 
         if (this.walkingTime+departureTime<unpackTripArrivalTime(packedTrips.get(index))){
-            return walkingTime+departureTime;
+            return this.walkingTime+departureTime;
         }else{
             return unpackTripArrivalTime(packedTrips.get(index));
         }
@@ -141,6 +142,9 @@ final class GraphEdge {
          * @return The builder in construction (this) so we can chain method calls
          */
         public Builder setWalkingTime(int newWalkingTime){
+            if (newWalkingTime<-1){
+                throw new IllegalArgumentException();
+            }
             this.walkingTime=newWalkingTime;
             return this;
         }
