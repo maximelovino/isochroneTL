@@ -8,19 +8,20 @@ import java.util.Map;
 import java.util.Set;
 
 public final class Graph {
+    private final Set<Stop> stops;
+    private final Map<Stop, List<GraphEdge>> outgoingEdges;
 
     private Graph(Set<Stop> stops, Map<Stop, List<GraphEdge>> outgoingEdges){
-        
+        this.stops=new HashSet<Stop>(stops);
+        this.outgoingEdges=outgoingEdges;
     }
     
     public final class Builder{
         private final Set<Stop> stops;
-        private final List<GraphEdge> tripEdges;
         private Map<Stop, Map<Stop, GraphEdge.Builder>> buildingEdges;
         
         public Builder(Set<Stop> stops){
             this.stops=new HashSet<Stop>(stops);
-            this.tripEdges=new ArrayList<GraphEdge>();
             this.buildingEdges=new HashMap<Stop, Map<Stop, GraphEdge.Builder>>();            
         }
         
@@ -58,7 +59,7 @@ public final class Graph {
             Map<Stop, GraphEdge.Builder> m= buildingEdges.get(fromStop);
             
             if(m==null){
-                Map<Stop, GraphEdge.Builder> newM=new HashMap();
+                Map<Stop, GraphEdge.Builder> newM=new HashMap<Stop,GraphEdge.Builder>();
                 m=newM;
             }
             
@@ -72,7 +73,16 @@ public final class Graph {
         }
         
         public Graph build(){
-            return new Graph();
+            Map<Stop, List<GraphEdge>> mapTripEdges=new HashMap<Stop, List<GraphEdge>>();
+            
+            for(Map.Entry<Stop, Map<Stop, GraphEdge.Builder>> entryMap : buildingEdges.entrySet()){
+                ArrayList<GraphEdge> edges=new ArrayList<GraphEdge>();
+                for(GraphEdge.Builder edge: entryMap.getValue().values()){
+                    edges.add(edge.build());
+                }
+                mapTripEdges.put(entryMap.getKey(),edges);
+            }
+            return new Graph(stops, mapTripEdges);
         }
     }
 }
