@@ -1,5 +1,6 @@
 package ch.epfl.isochrone.timetable;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public final class FastestPathTree {
@@ -8,6 +9,10 @@ public final class FastestPathTree {
     private final Map<Stop, Stop> predecessor;
     
     public FastestPathTree(Stop startingStop, Map<Stop, Integer> arrivalTime, Map<Stop, Stop> predecessor){
+        if (!(arrivalTime.keySet().equals(predecessor.keySet()))){
+            throw new IllegalArgumentException();
+        }
+        
         this.startingStop=startingStop;
         this.arrivalTime=arrivalTime;
         this.predecessor=predecessor;
@@ -26,11 +31,15 @@ public final class FastestPathTree {
     }
     
     public int arrivalTime(Stop stop){
-        
+        if(arrivalTime.get(stop)==null){
+            return SecondsPastMidnight.INFINITE;
+        }else{
+            return arrivalTime.get(stop);
+        }
     }
     
     public List<Stop> pathTo(Stop stop) throws IllegalArgumentException{
-        
+        ArrayList<Stop> path=new ArrayList<Stop>();
     }
     
     public static class Builder{
@@ -41,6 +50,8 @@ public final class FastestPathTree {
             if(startingTime<0){
                 throw new IllegalArgumentException();
             }
+            this.startingStop=startingStop;
+            this.startingTime=startingTime;
         }
         
         public Builder setArrivalTime(Stop stop, int time, Stop predecessor) throws IllegalArgumentException{
