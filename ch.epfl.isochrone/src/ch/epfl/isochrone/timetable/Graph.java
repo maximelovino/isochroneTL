@@ -29,6 +29,7 @@ public final class Graph {
                 throw new IllegalArgumentException();
             }
             
+            obtainBuilder(fromStop, toStop).addTrip(departureTime, arrivalTime);
             
             return this;
         }
@@ -37,17 +38,37 @@ public final class Graph {
             if(maxWalkingTime<0||walkingSpeed<=0){
                 throw new IllegalArgumentException();
             }
+            ArrayList<Stop> stopsList=new ArrayList<Stop>(stops);
+            double maxWalkingDistance=maxWalkingTime*walkingSpeed;
+            
+            for(int i=0; i<stopsList.size();i++){
+                for (int j=i+1;j<stopsList.size();j++){
+                    double d=stopsList.get(i).position().distanceTo(stopsList.get(j).position());
+                    if(d<maxWalkingDistance){
+                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)(d*walkingSpeed));
+                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)(d*walkingSpeed));
+                    }
+                }
+            }
+
             return this;
         }
         
-        private Map<Stop, GraphEdge.Builder> createMap(Stop toStop, int departureTime, int arrivalTime){
-            GraphEdge.Builder b=new GraphEdge.Builder(toStop);
-            b.addTrip(departureTime, arrivalTime);
+        private GraphEdge.Builder obtainBuilder(Stop fromStop, Stop toStop){
+            Map<Stop, GraphEdge.Builder> m= buildingEdges.get(fromStop);
             
-            Map<Stop, GraphEdge.Builder> m=new HashMap<Stop, GraphEdge.Builder>();
-            m.put(toStop, b);
+            if(m==null){
+                Map<Stop, GraphEdge.Builder> newM=new HashMap();
+                m=newM;
+            }
             
-            return m;
+            GraphEdge.Builder builder=m.get(toStop);
+            if(builder==null){
+                GraphEdge.Builder b=new GraphEdge.Builder(toStop);
+                builder=b;
+            }
+            
+            return builder;
         }
         
         public Graph build(){
