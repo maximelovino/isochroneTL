@@ -16,7 +16,7 @@ public final class Graph {
         this.outgoingEdges=outgoingEdges;
     }
     
-    public final class Builder{
+    public final static class Builder{
         private final Set<Stop> stops;
         private Map<Stop, Map<Stop, GraphEdge.Builder>> buildingEdges;
         
