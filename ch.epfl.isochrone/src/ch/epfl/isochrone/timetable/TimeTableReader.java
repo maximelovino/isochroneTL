@@ -19,12 +19,13 @@ public final class TimeTableReader {
         this.baseResourceName=baseResourceName;
     }
 
-    public TimeTable readTimeTable(){
-
+    public TimeTable readTimeTable() throws IOException{
+        return new TimeTable(readStops(),readServices());
     }
 
     public Graph readGraphForServices(){
-
+        
+        return null;
     }
 
     private Set<Stop> readStops() throws IOException{
@@ -80,7 +81,7 @@ public final class TimeTableReader {
             int year=Integer.parseInt(date.substring(0, 4));
             int month=Integer.parseInt(date.substring(4, 6));
             int day=Integer.parseInt(date.substring(6));
-            for (Iterator it = fileServicesBuilders.iterator(); it.hasNext();) {
+            for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
                 Service.Builder service = (Service.Builder) it.next();
                 String serviceName=service.name();
                 
@@ -98,7 +99,7 @@ public final class TimeTableReader {
         
         reader.close();
         
-        for (Iterator it = fileServicesBuilders.iterator(); it.hasNext();) {
+        for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
             Service.Builder service = (Service.Builder) it.next();
             fileService.add(service.build());
         }
