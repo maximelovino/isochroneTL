@@ -23,9 +23,39 @@ public final class TimeTableReader {
         return new TimeTable(readStops(),readServices());
     }
 
-    public Graph readGraphForServices(){
-        
-        return null;
+    public Graph readGraphForServices(Set<Stop> stops, Set<Service> services, int walkingTime, double walkingSpeed) throws IOException{
+        Graph.Builder buildingGraph=new Graph.Builder(stops);
+        InputStream graphStream=getClass().getResourceAsStream(baseResourceName+"stops_times.csv");
+        BufferedReader reader=new BufferedReader(new InputStreamReader(graphStream, StandardCharsets.UTF_8));
+        buildingGraph.addAllWalkEdges(walkingTime, walkingSpeed);
+
+        String line;
+        while((line=reader.readLine())!=null){
+            String[] aStopTime=line.split(";");
+            String fromStopTxt=aStopTime[1];
+            String toStopTxt=aStopTime[3];
+            int departureTime=Integer.parseInt(aStopTime[2]);
+            int arrivalTime=Integer.parseInt(aStopTime[4]);
+            Stop fromStop=null;
+            Stop toStop=null;
+            for (Iterator<Service> it = services.iterator(); it.hasNext();) {
+                Service service = (Service) it.next();
+                if(service.name().equals(aStopTime[0])){
+                    for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
+                        Stop theStop = (Stop) iterator.next();
+                        if(theStop.name().equals(fromStopTxt)){
+                            fromStop=theStop;
+                        }
+                        if(theStop.name().equals(toStopTxt)){
+                            toStop=theStop;
+                        }
+                    }
+                    buildingGraph.addTripEdge(fromStop, toStop, departureTime, arrivalTime);
+                }
+            }
+        }
+        reader.close();
+        return buildingGraph.build();
     }
 
     private Set<Stop> readStops() throws IOException{
@@ -64,7 +94,7 @@ public final class TimeTableReader {
             int endingMonth=Integer.parseInt(endingDate.substring(4, 6));
             int endingDay=Integer.parseInt(endingDate.substring(6));
             Service.Builder theService=new Service.Builder(name,new Date(beginDay, beginMonth, beginYear), new Date(endingDay, endingMonth, endingYear));
-            
+
             for(int i=1;i<8;i++){
                 if(Integer.parseInt(aService[i])==1){
                     theService.addOperatingDay(getOperatingDayFromServiceFile(i));
@@ -73,7 +103,7 @@ public final class TimeTableReader {
             fileServicesBuilders.add(theService);
         }
         servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar_dates.csv");
-        
+
         while((line=reader.readLine())!=null){
             String[] aServiceSpecial=line.split(";");
             String name=aServiceSpecial[0];
@@ -84,7 +114,7 @@ public final class TimeTableReader {
             for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
                 Service.Builder service = (Service.Builder) it.next();
                 String serviceName=service.name();
-                
+
                 if(name.equals(serviceName)){
                     if(Integer.parseInt(aServiceSpecial[2])==1){
                         service.addIncludedDate(new Date(day, month, year));
@@ -93,12 +123,12 @@ public final class TimeTableReader {
                         service.addExcludedDate(new Date(day, month, year));
                     }
                 }
-                
+
             }
         }
-        
+
         reader.close();
-        
+
         for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
             Service.Builder service = (Service.Builder) it.next();
             fileService.add(service.build());
