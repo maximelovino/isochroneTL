@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import ch.epfl.isochrone.geo.PointWGS84;
@@ -43,8 +44,9 @@ public final class TimeTableReader {
         return fileStops;
     }
 
-    private Set<Service.Builder> readServices() throws IOException{
+    private Set<Service> readServices() throws IOException{
         Set<Service.Builder> fileServicesBuilders=new HashSet<Service.Builder>();
+        Set<Service> fileService=new HashSet<Service>();
         InputStream servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar.csv");
         BufferedReader reader= new BufferedReader(new InputStreamReader(servicesStream, StandardCharsets.UTF_8));
 
@@ -69,8 +71,38 @@ public final class TimeTableReader {
             }
             fileServicesBuilders.add(theService);
         }
+        servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar_dates.csv");
+        
+        while((line=reader.readLine())!=null){
+            String[] aServiceSpecial=line.split(";");
+            String name=aServiceSpecial[0];
+            String date=aServiceSpecial[1];
+            int year=Integer.parseInt(date.substring(0, 4));
+            int month=Integer.parseInt(date.substring(4, 6));
+            int day=Integer.parseInt(date.substring(6));
+            for (Iterator it = fileServicesBuilders.iterator(); it.hasNext();) {
+                Service.Builder service = (Service.Builder) it.next();
+                String serviceName=service.name();
+                
+                if(name.equals(serviceName)){
+                    if(Integer.parseInt(aServiceSpecial[2])==1){
+                        service.addIncludedDate(new Date(day, month, year));
+                    }
+                    if(Integer.parseInt(aServiceSpecial[2])==2){
+                        service.addExcludedDate(new Date(day, month, year));
+                    }
+                }
+                
+            }
+        }
+        
         reader.close();
-        return fileServicesBuilders;
+        
+        for (Iterator it = fileServicesBuilders.iterator(); it.hasNext();) {
+            Service.Builder service = (Service.Builder) it.next();
+            fileService.add(service.build());
+        }
+        return fileService;
     }
 
     private static DayOfWeek getOperatingDayFromServiceFile(int n){
