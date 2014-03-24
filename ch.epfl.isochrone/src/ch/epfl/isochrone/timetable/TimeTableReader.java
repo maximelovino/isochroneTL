@@ -71,7 +71,8 @@ public final class TimeTableReader {
             fileStops.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
         }
 
-        reader.close();       
+        reader.close();
+        stopsStream.close();
         return fileStops;
     }
 
@@ -128,6 +129,7 @@ public final class TimeTableReader {
         }
 
         reader.close();
+        servicesStream.close();
 
         for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
             Service.Builder service = (Service.Builder) it.next();
