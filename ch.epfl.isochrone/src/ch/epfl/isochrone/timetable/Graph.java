@@ -7,24 +7,59 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class Graph {
     private final Set<Stop> stops;
     private final Map<Stop, List<GraphEdge>> outgoingEdges;
 
+    /**
+     * @param stops
+     *      A set of the stops of the graph
+     * @param outgoingEdges
+     *      A mapping of a stop of departure with all its outgoing edges
+     */
     private Graph(Set<Stop> stops, Map<Stop, List<GraphEdge>> outgoingEdges){
         this.stops=new HashSet<Stop>(stops);
         this.outgoingEdges=outgoingEdges;
     }
     
+    /**A static nested builder class for the graph
+     * 
+     * @author Maxime Lovino (236726)
+     * @author Julie Djeffal (193164)
+     *
+     */
     public final static class Builder{
         private final Set<Stop> stops;
         private Map<Stop, Map<Stop, GraphEdge.Builder>> buildingEdges;
         
+        /**
+         * @param stops
+         *      The set of the stops of the graph
+         */
         public Builder(Set<Stop> stops){
             this.stops=new HashSet<Stop>(stops);
             this.buildingEdges=new HashMap<Stop, Map<Stop, GraphEdge.Builder>>();            
         }
         
+        /**
+         * @param fromStop
+         *      The departure Stop of the trip
+         * @param toStop
+         *      The arrival Stop of the trip
+         * @param departureTime
+         *      The departure time of the trip
+         * @param arrivalTime
+         *      The arrival time of the trip
+         * @return
+         *      The builder (this) so we can chain method calls
+         * @throws IllegalArgumentException
+         *      If the departure Stop or the arrival Stop are not contained in the set of stops of the graph OR if one of the time is negative OR if the arrival time is inferior to the departure time 
+         */
         public Builder addTripEdge(Stop fromStop, Stop toStop, int departureTime, int arrivalTime) throws IllegalArgumentException{
             if(!this.stops.contains(fromStop)||!this.stops.contains(toStop)||departureTime<0||arrivalTime<0||arrivalTime<departureTime){
                 throw new IllegalArgumentException();
@@ -35,6 +70,16 @@ public final class Graph {
             return this;
         }
         
+        /**
+         * @param maxWalkingTime
+         *      The maximum time we can walk
+         * @param walkingSpeed
+         *      The walking speed
+         * @return
+         *      The builder (this) so we can chain method calls
+         * @throws IllegalArgumentException
+         *      If the maximum walking time is negative OR the walking speed is inferior or equal to 0
+         */
         public Builder addAllWalkEdges(int maxWalkingTime, double walkingSpeed) throws IllegalArgumentException{
             if(maxWalkingTime<0||walkingSpeed<=0){
                 throw new IllegalArgumentException();
@@ -55,23 +100,39 @@ public final class Graph {
             return this;
         }
         
+        /**
+         * @param fromStop
+         *      The departure stop
+         * @param toStop
+         *      The arrival stop
+         * @return
+         *      A GraphEdge.Builder for that trip
+         */
         private GraphEdge.Builder obtainBuilder(Stop fromStop, Stop toStop){
+//          We get the map of the GraphEdge.Builder for the departure stop
             Map<Stop, GraphEdge.Builder> m= buildingEdges.get(fromStop);
             
+//          if it's null, we create it and we continue with the one we created
             if(m==null){
                 Map<Stop, GraphEdge.Builder> newM=new HashMap<Stop,GraphEdge.Builder>();
                 m=newM;
             }
             
+//          We get the GraphEdge.Builder for the arrivalStop from the map
             GraphEdge.Builder builder=m.get(toStop);
+//          if it's null, we create it and we continue with the one we created
             if(builder==null){
                 GraphEdge.Builder b=new GraphEdge.Builder(toStop);
                 builder=b;
             }
             
+//          We are always sure to have a builder, because if it doesn't exist, we create one, and if it exists, we pick it
             return builder;
         }
         
+        /**
+         * @return A graph built from the Builder
+         */
         public Graph build(){
             Map<Stop, List<GraphEdge>> mapTripEdges=new HashMap<Stop, List<GraphEdge>>();
             
