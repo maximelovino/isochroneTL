@@ -66,8 +66,8 @@ public final class TimeTableReader {
         String line;
         while((line=reader.readLine())!=null){
             String[] aStop=line.split(";");
-            double latitude=Double.parseDouble(aStop[1]);
-            double longitude=Double.parseDouble(aStop[2]);
+            double latitude=Math.toRadians(Double.parseDouble(aStop[1]));
+            double longitude=Math.toRadians(Double.parseDouble(aStop[2]));
             fileStops.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
         }
 
