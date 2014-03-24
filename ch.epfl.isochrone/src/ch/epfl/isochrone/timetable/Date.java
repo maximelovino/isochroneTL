@@ -9,7 +9,7 @@ import static ch.epfl.isochrone.math.Math.*;
  * @author Julie Djeffal (193164)
  *
  */
-public final class Date {
+public final class Date implements Comparable<Date> {
 
     private final int day;
     private final Month month;
@@ -168,12 +168,10 @@ public final class Date {
         return this.fixed();
     }
     
-    /**
-     * @param that
-     *      The date that we want to compare to
-     * @return
-     *      -1 if the instance is before the date in parameter , 0 if it's the same date, 1 if it's after
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Override
     public int compareTo(Date that){
         if(this.fixed()<that.fixed()){
             return -1;
