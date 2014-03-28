@@ -27,6 +27,15 @@ public final class Graph {
         this.outgoingEdges=outgoingEdges;
     }
     
+    public FastestPathTree fastestPath(Stop startingStop, int departureTime) throws IllegalArgumentException{
+        if(!(stops.contains(startingStop))||departureTime<0){
+            throw new IllegalArgumentException();
+        }
+        
+        
+        return null;       
+    }
+    
     /**A static nested builder class for the graph
      * 
      * @author Maxime Lovino (236726)
