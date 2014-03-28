@@ -3,6 +3,7 @@ package ch.epfl.isochrone.timetable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,16 +27,32 @@ public final class Graph {
         this.stops=new HashSet<Stop>(stops);
         this.outgoingEdges=outgoingEdges;
     }
-    
+
     public FastestPathTree fastestPath(Stop startingStop, int departureTime) throws IllegalArgumentException{
         if(!(stops.contains(startingStop))||departureTime<0){
             throw new IllegalArgumentException();
         }
-        
-        
-        return null;       
+
+        Stop actualStop=startingStop;
+        int actualTime=departureTime;
+        FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
+
+
+
+        for (GraphEdge edge : outgoingEdges.get(actualStop)) {
+            if(edge.earliestArrivalTime(actualTime)<treeBuilder.arrivalTime(edge.destination())){
+                treeBuilder.setArrivalTime(edge.destination(), edge.earliestArrivalTime(actualTime), actualStop);
+                actualTime=edge.earliestArrivalTime(actualTime);
+                actualStop=edge.destination();
+            }
+        } 
+
+
+
+
+        return treeBuilder.build();       
     }
-    
+
     /**A static nested builder class for the graph
      * 
      * @author Maxime Lovino (236726)
@@ -45,7 +62,7 @@ public final class Graph {
     public final static class Builder{
         private final Set<Stop> stops;
         private Map<Stop, Map<Stop, GraphEdge.Builder>> buildingEdges;
-        
+
         /**
          * @param stops
          *      The set of the stops of the graph
@@ -54,7 +71,7 @@ public final class Graph {
             this.stops=new HashSet<Stop>(stops);
             this.buildingEdges=new HashMap<Stop, Map<Stop, GraphEdge.Builder>>();            
         }
-        
+
         /**
          * @param fromStop
          *      The departure Stop of the trip
@@ -73,12 +90,12 @@ public final class Graph {
             if(!this.stops.contains(fromStop)||!this.stops.contains(toStop)||departureTime<0||arrivalTime<0||arrivalTime<departureTime){
                 throw new IllegalArgumentException();
             }
-            
+
             obtainBuilder(fromStop, toStop).addTrip(departureTime, arrivalTime);
-            
+
             return this;
         }
-        
+
         /**
          * @param maxWalkingTime
          *      The maximum time we can walk
@@ -95,20 +112,20 @@ public final class Graph {
             }
             ArrayList<Stop> stopsList=new ArrayList<Stop>(stops);
             double maxWalkingDistance=maxWalkingTime*walkingSpeed;
-            
+
             for(int i=0; i<stopsList.size();i++){
                 for (int j=i+1;j<stopsList.size();j++){
                     double d=stopsList.get(i).position().distanceTo(stopsList.get(j).position());
                     if(d<maxWalkingDistance){
-                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)(d*walkingSpeed));
-                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)(d*walkingSpeed));
+                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)(d/walkingSpeed));
+                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)(d/walkingSpeed));
                     }
                 }
             }
 
             return this;
         }
-        
+
         /**
          * @param fromStop
          *      The departure stop
@@ -118,33 +135,33 @@ public final class Graph {
          *      A GraphEdge.Builder for that trip
          */
         private GraphEdge.Builder obtainBuilder(Stop fromStop, Stop toStop){
-//          We get the map of the GraphEdge.Builder for the departure stop
+            //          We get the map of the GraphEdge.Builder for the departure stop
             Map<Stop, GraphEdge.Builder> m= buildingEdges.get(fromStop);
-            
-//          if it's null, we create it and we continue with the one we created
+
+            //          if it's null, we create it and we continue with the one we created
             if(m==null){
                 Map<Stop, GraphEdge.Builder> newM=new HashMap<Stop,GraphEdge.Builder>();
                 m=newM;
             }
-            
-//          We get the GraphEdge.Builder for the arrivalStop from the map
+
+            //          We get the GraphEdge.Builder for the arrivalStop from the map
             GraphEdge.Builder builder=m.get(toStop);
-//          if it's null, we create it and we continue with the one we created
+            //          if it's null, we create it and we continue with the one we created
             if(builder==null){
                 GraphEdge.Builder b=new GraphEdge.Builder(toStop);
                 builder=b;
             }
-            
-//          We are always sure to have a builder, because if it doesn't exist, we create one, and if it exists, we pick it
+
+            //          We are always sure to have a builder, because if it doesn't exist, we create one, and if it exists, we pick it
             return builder;
         }
-        
+
         /**
          * @return A graph built from the Builder
          */
         public Graph build(){
             Map<Stop, List<GraphEdge>> mapTripEdges=new HashMap<Stop, List<GraphEdge>>();
-            
+
             for(Map.Entry<Stop, Map<Stop, GraphEdge.Builder>> entryMap : buildingEdges.entrySet()){
                 ArrayList<GraphEdge> edges=new ArrayList<GraphEdge>();
                 for(GraphEdge.Builder edge: entryMap.getValue().values()){
