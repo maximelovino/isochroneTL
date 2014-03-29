@@ -51,7 +51,7 @@ public final class FastestPathTree {
     }
 
     /**
-     * @return A set of the stopsfor which an arrival time exists
+     * @return A set of the stops for which an arrival time exists
      */
     public Set<Stop> stops(){
         Set<Stop> stops=new HashSet<Stop>();
@@ -67,7 +67,7 @@ public final class FastestPathTree {
 
     /**
      * @param stop
-     *      The stop of which we wanna know the time of arrival
+     *      The stop of which we want to know the time of arrival
      * @return The arrival time at that stop or SecondsPastMidnight.INFINITE if there is no arrival time defined
      */
     public int arrivalTime(Stop stop){

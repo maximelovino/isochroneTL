@@ -25,7 +25,7 @@ public final class TimeTableReader {
 
     public Graph readGraphForServices(Set<Stop> stops, Set<Service> services, int walkingTime, double walkingSpeed) throws IOException{
         Graph.Builder buildingGraph=new Graph.Builder(stops);
-        InputStream graphStream=getClass().getResourceAsStream(baseResourceName+"stops_times.csv");
+        InputStream graphStream=getClass().getResourceAsStream(baseResourceName+"stop_times.csv");
         BufferedReader reader=new BufferedReader(new InputStreamReader(graphStream, StandardCharsets.UTF_8));
         buildingGraph.addAllWalkEdges(walkingTime, walkingSpeed);
 

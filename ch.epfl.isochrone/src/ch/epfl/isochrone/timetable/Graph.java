@@ -32,18 +32,28 @@ public final class Graph {
         if(!(stops.contains(startingStop))||departureTime<0){
             throw new IllegalArgumentException();
         }
-
+        for (Iterator<Stop> it = stops.iterator(); it.hasNext();) {
+            Stop aStop = (Stop) it.next();
+            if(aStop.name().equals(startingStop.name())){
+                startingStop=aStop;
+            }
+        }
         Stop actualStop=startingStop;
         int actualTime=departureTime;
         FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
 
 
 
-        for (GraphEdge edge : outgoingEdges.get(actualStop)) {
+        for (GraphEdge edge : this.outgoingEdges.get(actualStop)) {
             if(edge.earliestArrivalTime(actualTime)<treeBuilder.arrivalTime(edge.destination())){
                 treeBuilder.setArrivalTime(edge.destination(), edge.earliestArrivalTime(actualTime), actualStop);
                 actualTime=edge.earliestArrivalTime(actualTime);
-                actualStop=edge.destination();
+                for (Iterator<Stop> it = stops.iterator(); it.hasNext();) {
+                    Stop aStop = (Stop) it.next();
+                    if(aStop.name().equals(edge.destination().name())){
+                        actualStop=aStop;
+                    }
+                }
             }
         } 
 
