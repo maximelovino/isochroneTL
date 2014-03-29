@@ -25,7 +25,7 @@ public final class Graph {
      */
     private Graph(Set<Stop> stops, Map<Stop, List<GraphEdge>> outgoingEdges){
         this.stops=new HashSet<Stop>(stops);
-        this.outgoingEdges=outgoingEdges;
+        this.outgoingEdges=new HashMap<Stop, List<GraphEdge>>(outgoingEdges);
     }
 
     public FastestPathTree fastestPath(Stop startingStop, int departureTime) throws IllegalArgumentException{
@@ -41,7 +41,7 @@ public final class Graph {
         Stop actualStop=startingStop;
         int actualTime=departureTime;
         FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
-
+        
 
 
         for (GraphEdge edge : this.outgoingEdges.get(actualStop)) {

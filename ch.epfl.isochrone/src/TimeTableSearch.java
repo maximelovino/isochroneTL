@@ -15,7 +15,7 @@ import ch.epfl.isochrone.timetable.TimeTableReader;
 
 public class TimeTableSearch {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String stopName=args[0];
         Stop startingStop=null;
         String[] dateTxt=args[1].split("-");
@@ -24,25 +24,25 @@ public class TimeTableSearch {
         int time=SecondsPastMidnight.fromHMS(Integer.parseInt(timeTxt[0]), Integer.parseInt(timeTxt[1]), Integer.parseInt(timeTxt[2]));
         
         TimeTableReader reader=new TimeTableReader("/time-table/");
-        TimeTable table=null;
-        try {
-            table = reader.readTimeTable();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-           System.out.println("erreur de lecture de l'horaire");
-        }
+        TimeTable table=reader.readTimeTable();
+//        try {
+//            table = reader.readTimeTable();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//           System.out.println("erreur de lecture de l'horaire");
+//        }
         Set<Service> services=table.servicesForDate(date);
         Set<Stop> stops=table.stops();
-        Graph graph=null;
-        try {
-            graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.println("erreur de lecture de l'horaire");
-        }
+        Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
+//        try {
+//            graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
+//        } catch (IllegalArgumentException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            System.out.println("erreur de lecture de l'horaire");
+//        }
         
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();

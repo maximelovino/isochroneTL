@@ -83,7 +83,7 @@ public final class FastestPathTree {
      *      An arrival stop
      * @return The fastest path to that stop in the form of an arraylist 
      * @throws IllegalArgumentException
-     *      If the Map of arrivaltimes doesn't contain a key for that stop
+     *      If the Map of arrival times doesn't contain a key for that stop
      */
     public List<Stop> pathTo(Stop stop) throws IllegalArgumentException{
         if(!(arrivalTime.containsKey(stop))){

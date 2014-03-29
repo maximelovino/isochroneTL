@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -73,7 +74,7 @@ public final class TimeTableReader {
 
         reader.close();
         stopsStream.close();
-        return fileStops;
+        return Collections.unmodifiableSet(fileStops);
     }
 
     private Set<Service> readServices() throws IOException{
@@ -135,7 +136,7 @@ public final class TimeTableReader {
             Service.Builder service = (Service.Builder) it.next();
             fileService.add(service.build());
         }
-        return fileService;
+        return Collections.unmodifiableSet(fileService);
     }
 
     private static DayOfWeek getOperatingDayFromServiceFile(int n){
