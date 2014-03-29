@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import ch.epfl.isochrone.timetable.Date;
@@ -43,7 +44,7 @@ public class TimeTableSearch {
             System.out.println("erreur de lecture de l'horaire");
         }
         
-        for (Iterator iterator = stops.iterator(); iterator.hasNext();) {
+        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
             
             if(stop.name().equals(stopName)){
@@ -53,6 +54,21 @@ public class TimeTableSearch {
         }
         
         FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
+        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
+            Stop stop = (Stop) iterator.next();
+            System.out.print(stop.name()+" : ");
+            System.out.print(SecondsPastMidnight.toString(fastestPathTree.arrivalTime(stop)));
+            System.out.println();
+            System.out.print("via: [");
+            List<Stop> path=fastestPathTree.pathTo(stop);
+            
+            for (Stop pathStop : path) {
+                System.out.print(pathStop.name()+",");
+            }
+            System.out.print("]");
+            System.out.println();
+            
+        }
         
     }
 
