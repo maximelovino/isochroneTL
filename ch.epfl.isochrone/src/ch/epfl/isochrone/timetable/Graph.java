@@ -1,11 +1,13 @@
 package ch.epfl.isochrone.timetable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -32,31 +34,41 @@ public final class Graph {
         if(!(stops.contains(startingStop))||departureTime<0){
             throw new IllegalArgumentException();
         }
-        for (Iterator<Stop> it = stops.iterator(); it.hasNext();) {
-            Stop aStop = (Stop) it.next();
-            if(aStop.name().equals(startingStop.name())){
-                startingStop=aStop;
-            }
-        }
-        Stop actualStop=startingStop;
-        int actualTime=departureTime;
-        FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
+        final FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
         
+        PriorityQueue<Stop> queue=new PriorityQueue<Stop>(stops.size(),new Comparator<Stop>() {
 
-
-        for (GraphEdge edge : this.outgoingEdges.get(actualStop)) {
-            if(edge.earliestArrivalTime(actualTime)<treeBuilder.arrivalTime(edge.destination())){
-                treeBuilder.setArrivalTime(edge.destination(), edge.earliestArrivalTime(actualTime), actualStop);
-                actualTime=edge.earliestArrivalTime(actualTime);
-                for (Iterator<Stop> it = stops.iterator(); it.hasNext();) {
-                    Stop aStop = (Stop) it.next();
-                    if(aStop.name().equals(edge.destination().name())){
-                        actualStop=aStop;
+            @Override
+            public int compare(Stop o1, Stop o2) {
+                return Integer.compare(treeBuilder.arrivalTime(o1), treeBuilder.arrivalTime(o2));
+            }
+        
+        });
+        
+        queue.addAll(stops);
+        
+        while(!queue.isEmpty()){
+            Stop actualStop=queue.remove();
+            int actualTime=treeBuilder.arrivalTime(actualStop);
+            if(actualTime==SecondsPastMidnight.INFINITE){
+                break;
+            }
+            
+            List<GraphEdge> listEdge=this.outgoingEdges.get(actualStop);
+            
+            if(listEdge!=null){
+                for (GraphEdge edge : listEdge) {
+                    Stop aStop=edge.destination();
+                    int earlyTime=edge.earliestArrivalTime(actualTime);
+                    if(earlyTime<treeBuilder.arrivalTime(aStop)){
+                        treeBuilder.setArrivalTime(aStop, earlyTime, actualStop);
+                        queue.remove(aStop);
+                        queue.add(aStop);
                     }
                 }
             }
-        } 
 
+        }
         return treeBuilder.build();       
     }
 
@@ -124,8 +136,8 @@ public final class Graph {
                 for (int j=i+1;j<stopsList.size();j++){
                     double d=stopsList.get(i).position().distanceTo(stopsList.get(j).position());
                     if(d<maxWalkingDistance){
-                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)(d/walkingSpeed));
-                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)(d/walkingSpeed));
+                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)Math.round(d/walkingSpeed));
+                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)Math.round(d/walkingSpeed));
                     }
                 }
             }

@@ -61,10 +61,11 @@ public class TimeTableSearch {
             System.out.println();
             System.out.print("via: [");
             List<Stop> path=fastestPathTree.pathTo(stop);
-            
-            for (Stop pathStop : path) {
-                System.out.print(pathStop.name()+",");
+            System.out.print(path.get(0));
+            for(int i=1;i<path.size()-1;i++){
+                System.out.print(path.get(i)+",");
             }
+            System.out.println(path.get(path.size()-1));
             System.out.print("]");
             System.out.println();
             
