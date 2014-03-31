@@ -44,6 +44,7 @@ public final class SecondsPastMidnight {
      *      A date of the form java.util.Date
      * @return The number of seconds passed since midnight
      */
+    @SuppressWarnings("deprecation")
     public static int fromJavaDate(java.util.Date date){
         return fromHMS(date.getHours(),date.getMinutes(),date.getSeconds());
     }
