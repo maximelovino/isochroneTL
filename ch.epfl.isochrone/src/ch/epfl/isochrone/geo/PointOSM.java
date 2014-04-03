@@ -3,7 +3,7 @@ package ch.epfl.isochrone.geo;
 import static java.lang.Math.*;
 
 /**
- * Un point en coordonnées OSM
+ * A point in OSM coordinates
  * 
  * @author Maxime Lovino (236726)
  * @author Julie Djeffal (193164)
@@ -17,13 +17,13 @@ public final class PointOSM {
     
     /**
      * @param zoom
-     *      Le niveau de zoom du point
+     *      The level of zoom of the point
      * @param x
-     *      La coordonnée selon l'axe x
+     *      The x-axis coordinate
      * @param y
-     *      La coordonnée selon l'axe y
+     *      The y-axis coordinate
      * @throws IllegalArgumentException
-     *      Si le zoom est négatif ou si les coordonnées sortent de la surface de la carte
+     *      If the zoom is negative or the point is outside of the map
      */
     public PointOSM(int zoom, double x, double y) throws IllegalArgumentException{
         if (zoom<0||x<0||y<0||x>maxXY(zoom)||y>maxXY(zoom)){
@@ -36,11 +36,11 @@ public final class PointOSM {
     
     /**
      * @param zoom
-     *      Le niveau de zoom du point 
+     *      The zoom level of the map
      * @return
-     *      La taille du côté de la surface de la carte
+     *      The size of a side of the map
      * @throws IllegalArgumentException
-     *      Si le zoom est négatif
+     *      If the zoom is negative
      */
     public static int maxXY(int zoom) throws IllegalArgumentException{
         if(zoom<0){
@@ -50,35 +50,35 @@ public final class PointOSM {
     }
     
     /**
-     * @return La coordonnée x du point 
+     * @return The x-axis coordinate of the point 
      */
     public double x(){
         return x;
     }
     
     /**
-     * @return La coordonnée y du point
+     * @return The y-axis coordinate of the point
      */
     public double y(){
         return y;
     }
     
     /**
-     * @return La coordonnée x du point arrondie au plus proche entier
+     * @return The x-axis coordinate rounded to the closest integer
      */
     public int roundedX(){
         return (int)round(x);
     }
 
     /**
-     * @return La coordonnée y du point arrondie au plus proche entier
+     * @return The y-axis coordinate rounded to the closest integer
      */
     public int roundedY(){
         return (int)round(y);
     }
     
     /**
-     * @return Le niveau de zoom du point
+     * @return The zoom level of the point
      */
     public int zoom(){
         return zoom;
@@ -86,10 +86,10 @@ public final class PointOSM {
     
     /**
      * @param newZoom
-     *      Le niveau de zoom auquel on veut convertir le point
-     * @return Le point avec le niveau de zoom voulu
+     *      The zoom level that we want to convert the point to
+     * @return The point at that level of zoom
      * @throws IllegalArgumentException
-     *      Si le zoom est négatif
+     *      If the new level of zoom is negative
      */
     public PointOSM atZoom(int newZoom) throws IllegalArgumentException{
         if(newZoom<0){
@@ -103,7 +103,7 @@ public final class PointOSM {
     }
     
     /**
-     * @return Le point en coordonnées WGS84
+     * @return The point in WGS84 coordinates
      */
     public PointWGS84 toWGS84(){
         int s=(int)pow(2, zoom+8);

@@ -52,6 +52,7 @@ public final class Date implements Comparable<Date> {
      * @param date
      *      A date in format java.util.Date
      */
+    @SuppressWarnings("deprecation")
     public Date(java.util.Date date){        
         this(date.getDate(),intToMonth(date.getMonth()+1),date.getYear()+1900);
     }
@@ -132,6 +133,7 @@ public final class Date implements Comparable<Date> {
     /**
      * @return the instance in the format java.util.Date
      */
+    @SuppressWarnings("deprecation")
     public java.util.Date toJavaDate(){
         return new java.util.Date(this.year()-1900,this.intMonth()-1,this.day);
     }

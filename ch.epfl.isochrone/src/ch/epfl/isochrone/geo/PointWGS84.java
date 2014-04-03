@@ -6,7 +6,7 @@ import static ch.epfl.isochrone.math.Math.*;
 
 
 /**
- * Un point en coordonnées WGS84
+ * A point in the WGS84 coordinates
  * 
  * @author Maxime Lovino (236726)
  * @author Julie Djeffal (193164)
@@ -18,11 +18,11 @@ public final class PointWGS84 {
 
     /**
      * @param longitude
-     *      La longitude du point
+     *      The longitude of the point
      * @param latitude
-     *      La latitude du point
+     *      The latitude of the point
      * @throws IllegalArgumentException
-     *      Si la latitude n'est pas dans [-PI/2,PI/2] ou que la longitude n'est pas dans [-PI,PI]
+     *      If the latitude is not in [-PI/2,PI/2] or the longitude is not in [-PI,PI]
      */
     public PointWGS84(double longitude, double latitude) throws IllegalArgumentException{
         if(longitude<-1*(PI)||longitude>PI||latitude<-1*(PI/2)||latitude>(PI/2)){
@@ -34,14 +34,14 @@ public final class PointWGS84 {
     }
     
     /**
-     * @return La longitude du point
+     * @return The longitude of the point
      */
     public double longitude(){
         return longitude;
     }
     
     /**
-     * @return La latitude du point
+     * @return The latitude of the point
      */
     public double latitude(){
         return latitude;
@@ -49,8 +49,8 @@ public final class PointWGS84 {
     
     /**
      * @param that
-     *      Le point par rapport auquel on veut savoir la distance
-     * @return La distance entre les deux points
+     *      The point that we want to know the distance to
+     * @return The distance between this point and the one in parameter(that)
      */
     public double distanceTo(PointWGS84 that){
         double distance=2*R*asin(sqrt(haversin(latitude-that.latitude())+cos(latitude)*cos(that.latitude())*haversin(longitude-that.longitude())));
@@ -59,10 +59,10 @@ public final class PointWGS84 {
     
     /**
      * @param zoom
-     *      Le zoom avec lequel on veut le point en coordonnées OSM 
-     * @return Le point en coordonnées OSM
+     *      The zoom level that we want our OSM point to be in 
+     * @return The point in OSM coordinates
      * @throws IllegalArgumentException
-     *      Si le zoom est négatif
+     *      If zoom is negative
      */
     public PointOSM toOSM(int zoom) throws IllegalArgumentException{
         if(zoom<0){

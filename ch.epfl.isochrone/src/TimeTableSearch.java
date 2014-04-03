@@ -25,24 +25,9 @@ public class TimeTableSearch {
         
         TimeTableReader reader=new TimeTableReader("/time-table/");
         TimeTable table=reader.readTimeTable();
-//        try {
-//            table = reader.readTimeTable();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//           System.out.println("erreur de lecture de l'horaire");
-//        }
         Set<Service> services=table.servicesForDate(date);
         Set<Stop> stops=table.stops();
         Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
-//        try {
-//            graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
-//        } catch (IllegalArgumentException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            System.out.println("erreur de lecture de l'horaire");
-//        }
         
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();

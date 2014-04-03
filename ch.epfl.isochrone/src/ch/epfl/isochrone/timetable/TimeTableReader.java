@@ -14,16 +14,45 @@ import ch.epfl.isochrone.geo.PointWGS84;
 import ch.epfl.isochrone.timetable.Date.DayOfWeek;
 import ch.epfl.isochrone.timetable.Service.Builder;
 
+/**
+ * The class that will read our files
+ * 
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class TimeTableReader {
     private final String baseResourceName;
+    
+    /**
+     * @param baseResourceName
+     *      The path that contains our files
+     */
     public TimeTableReader(String baseResourceName){
         this.baseResourceName=baseResourceName;
     }
 
+    /**
+     * @return A timetable based on the files
+     * @throws IOException
+     */
     public TimeTable readTimeTable() throws IOException{
         return new TimeTable(readStops(),readServices());
     }
 
+    /**
+     * @param stops
+     *      The set of stops
+     * @param services
+     *      The set of services
+     * @param walkingTime
+     *      The maximum time a person can walk
+     * @param walkingSpeed
+     *      The speed at which a person walks
+     * @return
+     *      A graph from our files for the services and stops in parameter
+     * @throws IOException
+     */
     public Graph readGraphForServices(Set<Stop> stops, Set<Service> services, int walkingTime, double walkingSpeed) throws IOException{
         Graph.Builder buildingGraph=new Graph.Builder(stops);
         InputStream graphStream=getClass().getResourceAsStream(baseResourceName+"stop_times.csv");
@@ -59,6 +88,10 @@ public final class TimeTableReader {
         return buildingGraph.build();
     }
 
+    /**
+     * @return The set of stops from the file
+     * @throws IOException
+     */
     private Set<Stop> readStops() throws IOException{
         Set<Stop> fileStops=new HashSet<Stop>();
         InputStream stopsStream = getClass().getResourceAsStream(baseResourceName+"stops.csv");
@@ -77,6 +110,10 @@ public final class TimeTableReader {
         return Collections.unmodifiableSet(fileStops);
     }
 
+    /**
+     * @return The set of services from the files
+     * @throws IOException
+     */
     private Set<Service> readServices() throws IOException{
         Set<Service.Builder> fileServicesBuilders=new HashSet<Service.Builder>();
         Set<Service> fileService=new HashSet<Service>();
@@ -139,6 +176,12 @@ public final class TimeTableReader {
         return Collections.unmodifiableSet(fileService);
     }
 
+    /**
+     * @param n
+     *      The index of a day of week
+     * @return
+     *      The day at that index, monday=1,..., sunday=7
+     */
     private static DayOfWeek getOperatingDayFromServiceFile(int n){
 
         switch(n){
