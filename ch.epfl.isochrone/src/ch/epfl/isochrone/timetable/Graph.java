@@ -30,6 +30,15 @@ public final class Graph {
         this.outgoingEdges=new HashMap<Stop, List<GraphEdge>>(outgoingEdges);
     }
 
+    /**
+     * @param startingStop
+     *      The stop that we start from
+     * @param departureTime
+     *      The departure time of our trip
+     * @return The fastest path from that stop at that time for all the other stops
+     * @throws IllegalArgumentException
+     *      If the startingStop is not in the set of stops or if the departureTime is smaller than 0
+     */
     public FastestPathTree fastestPath(Stop startingStop, int departureTime) throws IllegalArgumentException{
         if(!(stops.contains(startingStop))||departureTime<0){
             throw new IllegalArgumentException();
