@@ -138,6 +138,7 @@ final class GraphEdge {
         public Builder(Stop destination){
             this.destination=destination;
             this.packedTrips=new HashSet<Integer>();
+            this.walkingTime=-1;
         }
 
         /**
