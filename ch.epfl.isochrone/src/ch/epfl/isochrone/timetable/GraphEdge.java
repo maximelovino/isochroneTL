@@ -99,9 +99,7 @@ final class GraphEdge {
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
     public int earliestArrivalTime(int departureTime){
-//        if (this.walkingTime==-1){
-//            return SecondsPastMidnight.INFINITE;
-//        }
+
         //      binary search: O(log(n)) complexity
         int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
 
@@ -111,14 +109,14 @@ final class GraphEdge {
         
         if((index==packedTrips.size() && this.walkingTime==-1)||packedTrips.size()==0){
             return SecondsPastMidnight.INFINITE;
-        }
-        
-
-        if (this.walkingTime+departureTime<unpackTripArrivalTime(packedTrips.get(index))){
+        }else if (this.walkingTime+departureTime<unpackTripArrivalTime(packedTrips.get(index))){
             return this.walkingTime+departureTime;
         }else{
             return unpackTripArrivalTime(packedTrips.get(index));
         }
+        
+
+
     }
 
     /**The static nested builder class for a GraphEdge

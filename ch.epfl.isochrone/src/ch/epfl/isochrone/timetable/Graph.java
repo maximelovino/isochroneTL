@@ -144,9 +144,10 @@ public final class Graph {
             for(int i=0; i<stopsList.size();i++){
                 for (int j=i+1;j<stopsList.size();j++){
                     double d=stopsList.get(i).position().distanceTo(stopsList.get(j).position());
-                    if(d<maxWalkingDistance){
-                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime((int)Math.round(d/walkingSpeed));
-                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime((int)Math.round(d/walkingSpeed));
+                    if(d<=maxWalkingDistance){
+                        int time=(int)Math.round(d/walkingSpeed);
+                        obtainBuilder(stopsList.get(i),stopsList.get(j)).setWalkingTime(time);
+                        obtainBuilder(stopsList.get(j),stopsList.get(i)).setWalkingTime(time);
                     }
                 }
             }

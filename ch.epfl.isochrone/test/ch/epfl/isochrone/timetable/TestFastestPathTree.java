@@ -1,11 +1,17 @@
 package ch.epfl.isochrone.timetable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import ch.epfl.isochrone.geo.PointWGS84;
+import ch.epfl.isochrone.timetable.FastestPathTree.Builder;
 
 public class TestFastestPathTree {
     // Le "test" suivant n'en est pas un à proprement parler, raison pour
@@ -32,4 +38,19 @@ public class TestFastestPathTree {
     }
 
     // A compléter avec de véritables méthodes de test...
+    @Test
+    public void arrivalTime(){
+        Stop s1=new Stop("test 1",new PointWGS84(0.5, 1));
+        Stop s2=new Stop("test 2", new PointWGS84(0.501, 1));
+        Stop s3=new Stop("test 3", new PointWGS84(0.499, 1));
+        
+        FastestPathTree.Builder pathBuilder=new Builder(s1, SecondsPastMidnight.fromHMS(9, 0, 0));
+        pathBuilder.setArrivalTime(s2, SecondsPastMidnight.fromHMS(9, 10, 0), s1);
+        pathBuilder.setArrivalTime(s3, SecondsPastMidnight.fromHMS(9, 50, 0), s2);
+        assertEquals(SecondsPastMidnight.fromHMS(9, 50, 0), pathBuilder.arrivalTime(s3));
+        FastestPathTree pathTree=pathBuilder.build();
+        assertEquals(SecondsPastMidnight.fromHMS(9, 10, 0), pathTree.arrivalTime(s2));
+        List<Stop> path=pathTree.pathTo(s3);
+        assertEquals("[test 1, test 2, test 3]", path.toString());
+    }
 }

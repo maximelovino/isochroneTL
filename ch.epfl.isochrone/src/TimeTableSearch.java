@@ -44,15 +44,9 @@ public class TimeTableSearch {
             System.out.print(stop.name()+" : ");
             System.out.print(SecondsPastMidnight.toString(fastestPathTree.arrivalTime(stop)));
             System.out.println();
-            System.out.print("via: [");
+            System.out.print("via: ");
             List<Stop> path=fastestPathTree.pathTo(stop);
-            System.out.print(path.get(0));
-            for(int i=1;i<path.size()-1;i++){
-                System.out.print(path.get(i)+",");
-            }
-            System.out.println(path.get(path.size()-1));
-            System.out.print("]");
-            System.out.println();
+            System.out.println(path);
             
         }
         
