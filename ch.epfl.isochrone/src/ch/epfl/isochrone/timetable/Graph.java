@@ -57,10 +57,11 @@ public final class Graph {
         queue.addAll(stops);
         
         while(!queue.isEmpty()){
+            
             Stop actualStop=queue.remove();
             int actualTime=treeBuilder.arrivalTime(actualStop);
             if(actualTime==SecondsPastMidnight.INFINITE){
-                break;
+                return treeBuilder.build();
             }
             
             List<GraphEdge> listEdge=this.outgoingEdges.get(actualStop);
@@ -76,7 +77,7 @@ public final class Graph {
                     }
                 }
             }
-
+            
         }
         return treeBuilder.build();       
     }
