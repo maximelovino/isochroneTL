@@ -60,6 +60,7 @@ public final class Graph {
             
             Stop actualStop=queue.remove();
             int actualTime=treeBuilder.arrivalTime(actualStop);
+            
             if(actualTime==SecondsPastMidnight.INFINITE){
                 return treeBuilder.build();
             }

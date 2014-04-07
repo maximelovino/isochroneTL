@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import ch.epfl.isochrone.geo.PointWGS84;
@@ -93,7 +96,7 @@ public final class TimeTableReader {
      * @throws IOException
      */
     private Set<Stop> readStops() throws IOException{
-        Set<Stop> fileStops=new HashSet<Stop>();
+        List<Stop> fileStops=new ArrayList<Stop>();
         InputStream stopsStream = getClass().getResourceAsStream(baseResourceName+"stops.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(stopsStream, StandardCharsets.UTF_8));
 
@@ -107,7 +110,16 @@ public final class TimeTableReader {
 
         reader.close();
         stopsStream.close();
-        return Collections.unmodifiableSet(fileStops);
+        
+        Collections.sort(fileStops, new Comparator<Stop>() {
+
+            @Override
+            public int compare(Stop o1, Stop o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
+        Set<Stop> stopSet=new HashSet<Stop>(fileStops);
+        return Collections.unmodifiableSet(stopSet);
     }
 
     /**
