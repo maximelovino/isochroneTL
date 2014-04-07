@@ -1,6 +1,9 @@
 package ch.epfl.isochrone;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -24,34 +27,43 @@ public class TimeTableSearch {
         Date date=new Date(Integer.parseInt(dateTxt[2]), Integer.parseInt(dateTxt[1]), Integer.parseInt(dateTxt[0]));
         String[] timeTxt=args[2].split(":");
         int time=SecondsPastMidnight.fromHMS(Integer.parseInt(timeTxt[0]), Integer.parseInt(timeTxt[1]), Integer.parseInt(timeTxt[2]));
-        
+
         TimeTableReader reader=new TimeTableReader("/time-table/");
         TimeTable table=reader.readTimeTable();
         Set<Service> services=table.servicesForDate(date);
         Set<Stop> stops=table.stops();
+
         Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
-        
+
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
-            
+
             if(stop.name().equals(stopName)){
                 startingStop=stop;
             }
-            
+
         }
-        
+
+        List<Stop> stopsList=new ArrayList<Stop>(stops);
+        Collections.sort(stopsList, new Comparator<Stop>() {
+
+            @Override
+            public int compare(Stop o1, Stop o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
+
         FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
-        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
-            Stop stop = (Stop) iterator.next();
+        for (Stop stop:stopsList) {
             System.out.print(stop.name()+" : ");
             System.out.print(SecondsPastMidnight.toString(fastestPathTree.arrivalTime(stop)));
             System.out.println();
             System.out.print("via: ");
             List<Stop> path=fastestPathTree.pathTo(stop);
             System.out.println(path);
-            
+
         }
-        
+
     }
 
 }

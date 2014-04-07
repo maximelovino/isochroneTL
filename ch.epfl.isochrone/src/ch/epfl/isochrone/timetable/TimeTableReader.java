@@ -96,7 +96,7 @@ public final class TimeTableReader {
      * @throws IOException
      */
     private Set<Stop> readStops() throws IOException{
-        List<Stop> fileStops=new ArrayList<Stop>();
+        Set<Stop> stopSet=new HashSet<Stop>();
         InputStream stopsStream = getClass().getResourceAsStream(baseResourceName+"stops.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(stopsStream, StandardCharsets.UTF_8));
 
@@ -105,20 +105,13 @@ public final class TimeTableReader {
             String[] aStop=line.split(";");
             double latitude=Math.toRadians(Double.parseDouble(aStop[1]));
             double longitude=Math.toRadians(Double.parseDouble(aStop[2]));
-            fileStops.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
+            stopSet.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
         }
 
         reader.close();
         stopsStream.close();
         
-        Collections.sort(fileStops, new Comparator<Stop>() {
-
-            @Override
-            public int compare(Stop o1, Stop o2) {
-                return o1.name().compareTo(o2.name());
-            }
-        });
-        Set<Stop> stopSet=new HashSet<Stop>(fileStops);
+        
         return Collections.unmodifiableSet(stopSet);
     }
 
