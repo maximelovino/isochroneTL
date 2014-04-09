@@ -72,12 +72,119 @@ public final class Date implements Comparable<Date> {
     }
     
     /**
+     * @param m
+     *      A month in numeric format
+     * @return The month in Month format
+     * @throws IllegalArgumentException
+     *      If m is not in [1,12]
+     */
+    private static Month intToMonth(int m) throws IllegalArgumentException{
+        
+        if(m<1||m>12){
+            throw new IllegalArgumentException("invalid month index");
+        }
+        
+        Month month=Month.JANUARY;
+        
+        switch(m){
+        case 1:
+            break;
+        case 2:
+            month= Month.FEBRUARY;
+            break;
+        case 3:
+            month= Month.MARCH;
+            break;
+        case 4:
+            month=Month.APRIL;
+            break;
+        case 5:
+            month=Month.MAY;
+            break;
+        case 6:
+            month=Month.JUNE;
+            break;
+        case 7:
+            month=Month.JULY;
+            break;
+        case 8:
+            month=Month.AUGUST;
+            break;
+        case 9:
+            month=Month.SEPTEMBER;
+            break;
+        case 10:
+            month=Month.OCTOBER;
+            break;
+        case 11:
+            month=Month.NOVEMBER;
+            break;
+        case 12:
+            month=Month.DECEMBER;
+            break;            
+        }
+        
+        return month;
+    }
+
+    /**
      * @return the month in numeric format
      */
     public int intMonth(){
         return monthToInt(month);       
     }
     
+    /**
+     * @param m
+     *      A month in Month format
+     * @return The month in numeric format
+     */
+    private static int monthToInt(Month m){
+        
+        int i=0;
+        switch(m){
+        case JANUARY:
+            i=1;
+            break;
+        case FEBRUARY:
+            i=2;
+            break;
+        case MARCH:
+            i=3;
+            break;
+        case APRIL:
+            i=4;
+            break;
+        case MAY:
+            i=5;
+            break;
+        case JUNE:
+            i=6;
+            break;
+        case JULY:
+            i=7;
+            break;
+        case AUGUST:
+            i=8;
+            break;
+        case SEPTEMBER:
+            i=9;
+            break;
+        case OCTOBER:
+            i=10;
+            break;
+        case NOVEMBER:
+            i=11;
+            break;
+        case DECEMBER:
+            i=12;
+            break;
+        }
+        
+        return i;
+        
+    }
+
     /**
      * @return the year in numeric format
      */
@@ -186,112 +293,37 @@ public final class Date implements Comparable<Date> {
     
     
     /**
-     * @param m
-     *      A month in numeric format
-     * @return The month in Month format
-     * @throws IllegalArgumentException
-     *      If m is not in [1,12]
+     * @return The fixed format of the instance
      */
-    private static Month intToMonth(int m) throws IllegalArgumentException{
-        
-        if(m<1||m>12){
-            throw new IllegalArgumentException("invalid month index");
-        }
-        
-        Month month=Month.JANUARY;
-        
-        switch(m){
-        case 1:
-            break;
-        case 2:
-            month= Month.FEBRUARY;
-            break;
-        case 3:
-            month= Month.MARCH;
-            break;
-        case 4:
-            month=Month.APRIL;
-            break;
-        case 5:
-            month=Month.MAY;
-            break;
-        case 6:
-            month=Month.JUNE;
-            break;
-        case 7:
-            month=Month.JULY;
-            break;
-        case 8:
-            month=Month.AUGUST;
-            break;
-        case 9:
-            month=Month.SEPTEMBER;
-            break;
-        case 10:
-            month=Month.OCTOBER;
-            break;
-        case 11:
-            month=Month.NOVEMBER;
-            break;
-        case 12:
-            month=Month.DECEMBER;
-            break;            
-        }
-        
-        return month;
+    private int fixed(){
+        return dateToFixed(this.day(),this.month(),this.year());
     }
-    
+
     /**
+     * @param d
+     *      A day in numeric format
      * @param m
      *      A month in Month format
-     * @return The month in numeric format
+     * @param y
+     *      A year in numeric format
+     * @return The date in fixed format (number of days since 1 Jan 1)
      */
-    private static int monthToInt(Month m){
-        
-        int i=0;
-        switch(m){
-        case JANUARY:
-            i=1;
-            break;
-        case FEBRUARY:
-            i=2;
-            break;
-        case MARCH:
-            i=3;
-            break;
-        case APRIL:
-            i=4;
-            break;
-        case MAY:
-            i=5;
-            break;
-        case JUNE:
-            i=6;
-            break;
-        case JULY:
-            i=7;
-            break;
-        case AUGUST:
-            i=8;
-            break;
-        case SEPTEMBER:
-            i=9;
-            break;
-        case OCTOBER:
-            i=10;
-            break;
-        case NOVEMBER:
-            i=11;
-            break;
-        case DECEMBER:
-            i=12;
-            break;
+    private static int dateToFixed(int d, Month m, int y){
+        int y0=y-1;
+        int c;
+        if(monthToInt(m)<=2){
+            c=0;
+        }else if(monthToInt(m)>2 && isLeapYear(y)){
+            c=-1;
+        }else{
+            c=-2;
         }
         
-        return i;
+        int g=365*y0+divF(y0,4)-divF(y0,100)+divF(y0,400)+divF((367*monthToInt(m)-362),12)+c+d;
         
+        return g;
     }
-    
+
     /**
      * @param y
      *      A year in numeric format
@@ -328,31 +360,6 @@ public final class Date implements Comparable<Date> {
         }
         
         return days;
-    }
-    
-    /**
-     * @param d
-     *      A day in numeric format
-     * @param m
-     *      A month in Month format
-     * @param y
-     *      A year in numeric format
-     * @return The date in fixed format (number of days since 1 Jan 1)
-     */
-    private static int dateToFixed(int d, Month m, int y){
-        int y0=y-1;
-        int c;
-        if(monthToInt(m)<=2){
-            c=0;
-        }else if(monthToInt(m)>2 && isLeapYear(y)){
-            c=-1;
-        }else{
-            c=-2;
-        }
-        
-        int g=365*y0+divF(y0,4)-divF(y0,100)+divF(y0,400)+divF((367*monthToInt(m)-362),12)+c+d;
-        
-        return g;
     }
     
     /**
@@ -398,14 +405,6 @@ public final class Date implements Comparable<Date> {
         return new Date(d,m,y);     
         
     }
-    
-    /**
-     * @return The fixed format of the instance
-     */
-    private int fixed(){
-        return dateToFixed(this.day(),this.month(),this.year());
-    }
-    
     
     /**
      * An enumeration of the days of the week

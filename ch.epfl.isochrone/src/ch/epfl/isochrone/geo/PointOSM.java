@@ -57,19 +57,19 @@ public final class PointOSM {
     }
     
     /**
-     * @return The y-axis coordinate of the point
-     */
-    public double y(){
-        return y;
-    }
-    
-    /**
      * @return The x-axis coordinate rounded to the closest integer
      */
     public int roundedX(){
         return (int)round(x);
     }
 
+    /**
+     * @return The y-axis coordinate of the point
+     */
+    public double y(){
+        return y;
+    }
+    
     /**
      * @return The y-axis coordinate rounded to the closest integer
      */

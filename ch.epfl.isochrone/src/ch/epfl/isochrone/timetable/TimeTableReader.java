@@ -44,6 +44,96 @@ public final class TimeTableReader {
     }
 
     /**
+     * @return The set of stops from the file
+     * @throws IOException
+     */
+    private Set<Stop> readStops() throws IOException{
+        Set<Stop> stopSet=new HashSet<Stop>();
+        InputStream stopsStream = getClass().getResourceAsStream(baseResourceName+"stops.csv");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stopsStream, StandardCharsets.UTF_8));
+    
+        String line;
+        while((line=reader.readLine())!=null){
+            String[] aStop=line.split(";");
+            double latitude=Math.toRadians(Double.parseDouble(aStop[1]));
+            double longitude=Math.toRadians(Double.parseDouble(aStop[2]));
+            stopSet.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
+        }
+    
+        reader.close();
+        stopsStream.close();
+        
+        
+        return Collections.unmodifiableSet(stopSet);
+    }
+
+    /**
+     * @return The set of services from the files
+     * @throws IOException
+     */
+    private Set<Service> readServices() throws IOException{
+        Set<Service.Builder> fileServicesBuilders=new HashSet<Service.Builder>();
+        Set<Service> fileService=new HashSet<Service>();
+        InputStream servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar.csv");
+        BufferedReader reader= new BufferedReader(new InputStreamReader(servicesStream, StandardCharsets.UTF_8));
+    
+        String line;
+        while((line=reader.readLine())!=null){
+            String[] aService=line.split(";");
+            String name=aService[0];
+            String beginDate=aService[8];
+            int beginYear=Integer.parseInt(beginDate.substring(0, 4));
+            int beginMonth=Integer.parseInt(beginDate.substring(4, 6));
+            int beginDay=Integer.parseInt(beginDate.substring(6));
+            String endingDate=aService[9];
+            int endingYear=Integer.parseInt(endingDate.substring(0, 4));
+            int endingMonth=Integer.parseInt(endingDate.substring(4, 6));
+            int endingDay=Integer.parseInt(endingDate.substring(6));
+            Service.Builder theService=new Service.Builder(name,new Date(beginDay, beginMonth, beginYear), new Date(endingDay, endingMonth, endingYear));
+    
+            for(int i=1;i<8;i++){
+                if(Integer.parseInt(aService[i])==1){
+                    theService.addOperatingDay(DayOfWeek.values()[i-1]);
+                }
+            }
+            fileServicesBuilders.add(theService);
+        }
+        servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar_dates.csv");
+    
+        while((line=reader.readLine())!=null){
+            String[] aServiceSpecial=line.split(";");
+            String name=aServiceSpecial[0];
+            String date=aServiceSpecial[1];
+            int year=Integer.parseInt(date.substring(0, 4));
+            int month=Integer.parseInt(date.substring(4, 6));
+            int day=Integer.parseInt(date.substring(6));
+            for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
+                Service.Builder service = (Service.Builder) it.next();
+                String serviceName=service.name();
+    
+                if(name.equals(serviceName)){
+                    if(Integer.parseInt(aServiceSpecial[2])==1){
+                        service.addIncludedDate(new Date(day, month, year));
+                    }
+                    if(Integer.parseInt(aServiceSpecial[2])==2){
+                        service.addExcludedDate(new Date(day, month, year));
+                    }
+                }
+    
+            }
+        }
+    
+        reader.close();
+        servicesStream.close();
+    
+        for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
+            Service.Builder service = (Service.Builder) it.next();
+            fileService.add(service.build());
+        }
+        return Collections.unmodifiableSet(fileService);
+    }
+
+    /**
      * @param stops
      *      The set of stops
      * @param services
@@ -89,95 +179,5 @@ public final class TimeTableReader {
         }
         reader.close();
         return buildingGraph.build();
-    }
-
-    /**
-     * @return The set of stops from the file
-     * @throws IOException
-     */
-    private Set<Stop> readStops() throws IOException{
-        Set<Stop> stopSet=new HashSet<Stop>();
-        InputStream stopsStream = getClass().getResourceAsStream(baseResourceName+"stops.csv");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stopsStream, StandardCharsets.UTF_8));
-
-        String line;
-        while((line=reader.readLine())!=null){
-            String[] aStop=line.split(";");
-            double latitude=Math.toRadians(Double.parseDouble(aStop[1]));
-            double longitude=Math.toRadians(Double.parseDouble(aStop[2]));
-            stopSet.add(new Stop(aStop[0], new PointWGS84(longitude, latitude)));
-        }
-
-        reader.close();
-        stopsStream.close();
-        
-        
-        return Collections.unmodifiableSet(stopSet);
-    }
-
-    /**
-     * @return The set of services from the files
-     * @throws IOException
-     */
-    private Set<Service> readServices() throws IOException{
-        Set<Service.Builder> fileServicesBuilders=new HashSet<Service.Builder>();
-        Set<Service> fileService=new HashSet<Service>();
-        InputStream servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar.csv");
-        BufferedReader reader= new BufferedReader(new InputStreamReader(servicesStream, StandardCharsets.UTF_8));
-
-        String line;
-        while((line=reader.readLine())!=null){
-            String[] aService=line.split(";");
-            String name=aService[0];
-            String beginDate=aService[8];
-            int beginYear=Integer.parseInt(beginDate.substring(0, 4));
-            int beginMonth=Integer.parseInt(beginDate.substring(4, 6));
-            int beginDay=Integer.parseInt(beginDate.substring(6));
-            String endingDate=aService[9];
-            int endingYear=Integer.parseInt(endingDate.substring(0, 4));
-            int endingMonth=Integer.parseInt(endingDate.substring(4, 6));
-            int endingDay=Integer.parseInt(endingDate.substring(6));
-            Service.Builder theService=new Service.Builder(name,new Date(beginDay, beginMonth, beginYear), new Date(endingDay, endingMonth, endingYear));
-
-            for(int i=1;i<8;i++){
-                if(Integer.parseInt(aService[i])==1){
-                    theService.addOperatingDay(DayOfWeek.values()[i-1]);
-                }
-            }
-            fileServicesBuilders.add(theService);
-        }
-        servicesStream=getClass().getResourceAsStream(baseResourceName+"calendar_dates.csv");
-
-        while((line=reader.readLine())!=null){
-            String[] aServiceSpecial=line.split(";");
-            String name=aServiceSpecial[0];
-            String date=aServiceSpecial[1];
-            int year=Integer.parseInt(date.substring(0, 4));
-            int month=Integer.parseInt(date.substring(4, 6));
-            int day=Integer.parseInt(date.substring(6));
-            for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
-                Service.Builder service = (Service.Builder) it.next();
-                String serviceName=service.name();
-
-                if(name.equals(serviceName)){
-                    if(Integer.parseInt(aServiceSpecial[2])==1){
-                        service.addIncludedDate(new Date(day, month, year));
-                    }
-                    if(Integer.parseInt(aServiceSpecial[2])==2){
-                        service.addExcludedDate(new Date(day, month, year));
-                    }
-                }
-
-            }
-        }
-
-        reader.close();
-        servicesStream.close();
-
-        for (Iterator<Service.Builder> it = fileServicesBuilders.iterator(); it.hasNext();) {
-            Service.Builder service = (Service.Builder) it.next();
-            fileService.add(service.build());
-        }
-        return Collections.unmodifiableSet(fileService);
     }
 }
