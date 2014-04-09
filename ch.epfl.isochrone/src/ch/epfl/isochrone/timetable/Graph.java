@@ -56,11 +56,12 @@ public final class Graph {
         
         queue.addAll(stops);
         
+        Stop actualStop;
+        int actualTime;
         
         while(!queue.isEmpty()){
-            
-            Stop actualStop=queue.remove();
-            int actualTime=treeBuilder.arrivalTime(actualStop);
+            actualStop=queue.remove();
+            actualTime=treeBuilder.arrivalTime(actualStop);
             
             if(actualTime==SecondsPastMidnight.INFINITE){
                 continue;
@@ -79,7 +80,7 @@ public final class Graph {
                     }
                 }
             }
-            
+            actualStop=queue.remove();
         }
         return treeBuilder.build();       
     }

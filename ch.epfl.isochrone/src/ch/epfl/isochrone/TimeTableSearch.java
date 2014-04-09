@@ -33,7 +33,6 @@ public class TimeTableSearch {
         Set<Service> services=table.servicesForDate(date);
         Set<Stop> stops=table.stops();
 
-        Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
 
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
@@ -52,6 +51,8 @@ public class TimeTableSearch {
                 return o1.name().compareTo(o2.name());
             }
         });
+        
+        Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
 
         FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
         for (Stop stop:stopsList) {
