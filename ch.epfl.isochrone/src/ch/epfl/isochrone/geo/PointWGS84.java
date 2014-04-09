@@ -26,7 +26,7 @@ public final class PointWGS84 {
      */
     public PointWGS84(double longitude, double latitude) throws IllegalArgumentException{
         if(longitude<-1*(PI)||longitude>PI||latitude<-1*(PI/2)||latitude>(PI/2)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid arguments for the creation of a WGS84 point");
         }
         
         this.latitude=latitude;
@@ -66,7 +66,7 @@ public final class PointWGS84 {
      */
     public PointOSM toOSM(int zoom) throws IllegalArgumentException{
         if(zoom<0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid zoom level");
         }
         
         int s=(int)pow(2, zoom+8);

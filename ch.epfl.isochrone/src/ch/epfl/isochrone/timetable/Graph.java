@@ -41,7 +41,7 @@ public final class Graph {
      */
     public FastestPathTree fastestPath(Stop startingStop, int departureTime) throws IllegalArgumentException{
         if(!(stops.contains(startingStop))||departureTime<0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("the stop is not in the set of stops or the departureTime is negative");
         }
         final FastestPathTree.Builder treeBuilder=new FastestPathTree.Builder(startingStop, departureTime);
         
@@ -56,13 +56,14 @@ public final class Graph {
         
         queue.addAll(stops);
         
+        
         while(!queue.isEmpty()){
             
             Stop actualStop=queue.remove();
             int actualTime=treeBuilder.arrivalTime(actualStop);
             
             if(actualTime==SecondsPastMidnight.INFINITE){
-                return treeBuilder.build();
+                continue;
             }
             
             List<GraphEdge> listEdge=this.outgoingEdges.get(actualStop);
@@ -118,7 +119,7 @@ public final class Graph {
          */
         public Builder addTripEdge(Stop fromStop, Stop toStop, int departureTime, int arrivalTime) throws IllegalArgumentException{
             if(!this.stops.contains(fromStop)||!this.stops.contains(toStop)||departureTime<0||arrivalTime<0||arrivalTime<departureTime){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("one of the stops is not in the set of stops or one of the times is negative");
             }
 
             obtainBuilder(fromStop, toStop).addTrip(departureTime, arrivalTime);
@@ -138,7 +139,7 @@ public final class Graph {
          */
         public Builder addAllWalkEdges(int maxWalkingTime, double walkingSpeed) throws IllegalArgumentException{
             if(maxWalkingTime<0||walkingSpeed<=0){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the walking time is negative or the walking speed<=0");
             }
             ArrayList<Stop> stopsList=new ArrayList<Stop>(stops);
             double maxWalkingDistance=maxWalkingTime*walkingSpeed;

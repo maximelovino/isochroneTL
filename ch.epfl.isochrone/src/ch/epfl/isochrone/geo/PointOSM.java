@@ -27,7 +27,7 @@ public final class PointOSM {
      */
     public PointOSM(int zoom, double x, double y) throws IllegalArgumentException{
         if (zoom<0||x<0||y<0||x>maxXY(zoom)||y>maxXY(zoom)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid arguments for the creation of an OSM point");
         }
         this.zoom=zoom;
         this.x=x;
@@ -44,7 +44,7 @@ public final class PointOSM {
      */
     public static int maxXY(int zoom) throws IllegalArgumentException{
         if(zoom<0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid zoom level");
         }
         return (int)pow(2, zoom+8);
     }
@@ -93,7 +93,7 @@ public final class PointOSM {
      */
     public PointOSM atZoom(int newZoom) throws IllegalArgumentException{
         if(newZoom<0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid zoom level");
         }
         
         double newX=this.x*pow(2, newZoom-this.zoom);

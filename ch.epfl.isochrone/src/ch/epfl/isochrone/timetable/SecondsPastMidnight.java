@@ -32,7 +32,7 @@ public final class SecondsPastMidnight {
      */
     public static int fromHMS(int hours, int minutes, int seconds) throws IllegalArgumentException{
         if(hours<0||hours>=30||minutes<0||minutes>=60||seconds<0||seconds>=60){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("the time is invalid");
         }
         
         int s=hours*3600+minutes*60+seconds;
@@ -58,7 +58,7 @@ public final class SecondsPastMidnight {
      */
     public static int hours(int spm) throws IllegalArgumentException{
         if(spm<0||spm>fromHMS(29,59,59)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("the time is invalid");
         }
         
         return divF(spm,3600);

@@ -43,8 +43,8 @@ public class TestFastestPathTree {
         Stop s1=new Stop("test 1",new PointWGS84(0.5, 1));
         Stop s2=new Stop("test 2", new PointWGS84(0.501, 1));
         Stop s3=new Stop("test 3", new PointWGS84(0.499, 1));
-        
-        FastestPathTree.Builder pathBuilder=new Builder(s1, SecondsPastMidnight.fromHMS(9, 0, 0));
+        int departureTime=SecondsPastMidnight.fromHMS(9, 0, 0);
+        FastestPathTree.Builder pathBuilder=new Builder(s1,departureTime );
         pathBuilder.setArrivalTime(s2, SecondsPastMidnight.fromHMS(9, 10, 0), s1);
         pathBuilder.setArrivalTime(s3, SecondsPastMidnight.fromHMS(9, 50, 0), s2);
         assertEquals(SecondsPastMidnight.fromHMS(9, 50, 0), pathBuilder.arrivalTime(s3));
@@ -52,5 +52,7 @@ public class TestFastestPathTree {
         assertEquals(SecondsPastMidnight.fromHMS(9, 10, 0), pathTree.arrivalTime(s2));
         List<Stop> path=pathTree.pathTo(s3);
         assertEquals("[test 1, test 2, test 3]", path.toString());
+        assertEquals(departureTime, pathBuilder.arrivalTime(s1));
+        assertEquals(departureTime, pathTree.arrivalTime(s1));
     }
 }

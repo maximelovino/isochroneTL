@@ -55,7 +55,7 @@ public class TimeTableSearch {
 
         FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
         for (Stop stop:stopsList) {
-            System.out.print(stop.name()+" : ");
+            System.out.print(stop+" : ");
             System.out.print(SecondsPastMidnight.toString(fastestPathTree.arrivalTime(stop)));
             System.out.println();
             System.out.print("via: ");

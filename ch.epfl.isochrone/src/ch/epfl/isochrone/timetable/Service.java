@@ -110,7 +110,7 @@ public final class Service {
          */
         public Builder(String name, Date startingDate, Date endingDate) throws IllegalArgumentException{
             if(startingDate.compareTo(endingDate)==1){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the starting date is after the ending date");
             }
 
             this.name=name;
@@ -149,7 +149,7 @@ public final class Service {
          */
         public Builder addExcludedDate(Date date) throws IllegalArgumentException{
             if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||includedDates.contains(date)){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the date is not in the validity of the service or is in includedDates");
             }
 
             excludedDates.add(date);
@@ -166,7 +166,7 @@ public final class Service {
          */
         public Builder addIncludedDate(Date date) throws IllegalArgumentException{
             if(date.compareTo(startingDate)==-1||date.compareTo(endingDate)==1||excludedDates.contains(date)){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the date is not in the validity of the service or is in excludedDates");
             }      
 
             includedDates.add(date);

@@ -27,7 +27,7 @@ public final class Date implements Comparable<Date> {
      */
     public Date (int day, Month month, int year) throws IllegalArgumentException{
         if(day<1||day>daysInMonth(month,year)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid arguments for the creation of a Date");
         }
         
         this.day=day;
@@ -195,7 +195,7 @@ public final class Date implements Comparable<Date> {
     private static Month intToMonth(int m) throws IllegalArgumentException{
         
         if(m<1||m>12){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid month index");
         }
         
         Month month=Month.JANUARY;

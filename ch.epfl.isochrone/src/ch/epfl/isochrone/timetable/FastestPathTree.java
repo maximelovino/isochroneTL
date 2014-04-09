@@ -28,7 +28,7 @@ public final class FastestPathTree {
      */
     public FastestPathTree(Stop startingStop, Map<Stop, Integer> arrivalTime, Map<Stop, Stop> predecessor){
         if (!(arrivalTime.keySet().equals(predecessor.keySet()))){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("the map of arrivalTimes and predecessors don't have the same key");
         }
 
         this.startingStop=startingStop;
@@ -87,7 +87,7 @@ public final class FastestPathTree {
      */
     public List<Stop> pathTo(Stop stop) throws IllegalArgumentException{
         if(!(arrivalTime.containsKey(stop))){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("the stop is not contained in the mapping of arrivalTimes");
         }
 
         ArrayList<Stop> path=new ArrayList<Stop>();
@@ -123,12 +123,14 @@ public final class FastestPathTree {
          */
         public Builder(Stop startingStop, int startingTime)throws IllegalArgumentException{
             if(startingTime<0){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the starting time is negative");
             }
             this.startingStop=startingStop;
             this.startingTime=startingTime;
             this.arrivalTime=new HashMap<Stop, Integer>();
+            this.arrivalTime.put(startingStop, startingTime);
             this.predecessor=new HashMap<Stop, Stop>();
+            this.predecessor.put(startingStop, null);
         }
 
         /**
@@ -145,7 +147,7 @@ public final class FastestPathTree {
          */
         public Builder setArrivalTime(Stop stop, int time, Stop predecessor) throws IllegalArgumentException{
             if(time<this.startingTime){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("time of arrival<startingTime");
             }
             
             this.arrivalTime.put(stop, time);

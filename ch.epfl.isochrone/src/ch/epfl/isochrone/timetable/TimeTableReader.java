@@ -141,7 +141,7 @@ public final class TimeTableReader {
 
             for(int i=1;i<8;i++){
                 if(Integer.parseInt(aService[i])==1){
-                    theService.addOperatingDay(getOperatingDayFromServiceFile(i));
+                    theService.addOperatingDay(DayOfWeek.values()[i-1]);
                 }
             }
             fileServicesBuilders.add(theService);
@@ -179,33 +179,5 @@ public final class TimeTableReader {
             fileService.add(service.build());
         }
         return Collections.unmodifiableSet(fileService);
-    }
-
-    /**
-     * @param n
-     *      The index of a day of week
-     * @return
-     *      The day at that index, monday=1,..., sunday=7
-     */
-    private static DayOfWeek getOperatingDayFromServiceFile(int n){
-
-        switch(n){
-        case 1:
-            return DayOfWeek.MONDAY;
-        case 2:
-            return DayOfWeek.TUESDAY;
-        case 3:
-            return DayOfWeek.WEDNESDAY;
-        case 4:
-            return DayOfWeek.THURSDAY;
-        case 5:
-            return DayOfWeek.FRIDAY;
-        case 6:
-            return DayOfWeek.SATURDAY;
-        case 7:
-            return DayOfWeek.SUNDAY;
-        default:
-            throw new Error();
-        }
     }
 }

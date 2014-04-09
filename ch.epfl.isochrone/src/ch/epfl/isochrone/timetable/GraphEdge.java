@@ -45,10 +45,10 @@ final class GraphEdge {
      */
     public static int packTrip(int departureTime, int arrivalTime) throws IllegalArgumentException{
         if(departureTime<0||departureTime>107999){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid departuretime");
         }
         if(arrivalTime-departureTime<0||arrivalTime-departureTime>9999){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid trip length");
         }
 
         int packedTrip=departureTime*10000+(arrivalTime-departureTime);
@@ -146,7 +146,7 @@ final class GraphEdge {
          */
         public Builder setWalkingTime(int newWalkingTime){
             if (newWalkingTime<-1){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("the walking time is smaller than -1");
             }
             this.walkingTime=newWalkingTime;
             return this;
