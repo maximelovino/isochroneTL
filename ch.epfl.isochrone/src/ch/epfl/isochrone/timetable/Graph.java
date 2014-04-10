@@ -27,7 +27,13 @@ public final class Graph {
      */
     private Graph(Set<Stop> stops, Map<Stop, List<GraphEdge>> outgoingEdges){
         this.stops=new HashSet<Stop>(stops);
-        this.outgoingEdges=new HashMap<Stop, List<GraphEdge>>(outgoingEdges);
+
+        this.outgoingEdges=new HashMap<Stop, List<GraphEdge>>();
+        
+        for (Iterator<Stop> it = outgoingEdges.keySet().iterator(); it.hasNext();) {
+            Stop stop = (Stop) it.next();
+            this.outgoingEdges.put(stop, new ArrayList<GraphEdge>(outgoingEdges.get(stop)));
+        }
     }
 
     /**
@@ -80,7 +86,7 @@ public final class Graph {
                     }
                 }
             }
-            actualStop=queue.remove();
+            
         }
         return treeBuilder.build();       
     }
@@ -124,7 +130,7 @@ public final class Graph {
             }
 
             obtainBuilder(fromStop, toStop).addTrip(departureTime, arrivalTime);
-
+            
             return this;
         }
 

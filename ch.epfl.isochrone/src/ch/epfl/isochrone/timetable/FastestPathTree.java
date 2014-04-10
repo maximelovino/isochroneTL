@@ -27,7 +27,9 @@ public final class FastestPathTree {
      *      A mapping of a stop with its predecessor in the path
      */
     public FastestPathTree(Stop startingStop, Map<Stop, Integer> arrivalTime, Map<Stop, Stop> predecessor){
-        if (!(arrivalTime.keySet().equals(predecessor.keySet()))){
+        Set<Stop> predSet=new HashSet<Stop>(predecessor.keySet());
+        predSet.add(startingStop);
+        if (!(arrivalTime.keySet().equals(predSet))){
             throw new IllegalArgumentException("the map of arrivalTimes and predecessors don't have the same key");
         }
 
@@ -130,7 +132,6 @@ public final class FastestPathTree {
             this.arrivalTime=new HashMap<Stop, Integer>();
             this.arrivalTime.put(startingStop, startingTime);
             this.predecessor=new HashMap<Stop, Stop>();
-            this.predecessor.put(startingStop, null);
         }
 
         /**

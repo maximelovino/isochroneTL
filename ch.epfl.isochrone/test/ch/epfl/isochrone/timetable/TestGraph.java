@@ -137,7 +137,7 @@ public class TestGraph {
         stops.add(s2);
         stops.add(s3);
         Graph.Builder buildingGraph=new Graph.Builder(stops);
-        buildingGraph.addAllWalkEdges(SecondsPastMidnight.fromHMS(0, 30, 0), 30);
+        buildingGraph.addAllWalkEdges(SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
         buildingGraph.addTripEdge(s1, s2, SecondsPastMidnight.fromHMS(9, 0, 0), SecondsPastMidnight.fromHMS(9, 25, 0));
         buildingGraph.addTripEdge(s1, s2, SecondsPastMidnight.fromHMS(9, 25, 0), SecondsPastMidnight.fromHMS(9, 50, 0));
         Graph graph=buildingGraph.build();

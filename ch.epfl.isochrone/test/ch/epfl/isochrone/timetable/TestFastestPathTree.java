@@ -54,5 +54,6 @@ public class TestFastestPathTree {
         assertEquals("[test 1, test 2, test 3]", path.toString());
         assertEquals(departureTime, pathBuilder.arrivalTime(s1));
         assertEquals(departureTime, pathTree.arrivalTime(s1));
+        assertEquals(departureTime, pathTree.startingTime());
     }
 }
