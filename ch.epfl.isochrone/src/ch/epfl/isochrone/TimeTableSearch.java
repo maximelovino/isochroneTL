@@ -43,7 +43,11 @@ public class TimeTableSearch {
 
         }
 
-        List<Stop> stopsList=new ArrayList<Stop>(stops);
+        Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
+
+        FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
+        
+        List<Stop> stopsList=new ArrayList<Stop>(fastestPathTree.stops());
         Collections.sort(stopsList, new Comparator<Stop>() {
 
             @Override
@@ -52,9 +56,7 @@ public class TimeTableSearch {
             }
         });
 
-        Graph graph=reader.readGraphForServices(stops, services, SecondsPastMidnight.fromHMS(0, 5, 0), 1.25);
 
-        FastestPathTree fastestPathTree=graph.fastestPath(startingStop, time);
         for (Stop stop:stopsList) {
             System.out.print(stop+" : ");
             

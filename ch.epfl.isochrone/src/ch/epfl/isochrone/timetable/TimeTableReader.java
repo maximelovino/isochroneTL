@@ -178,6 +178,7 @@ public final class TimeTableReader {
             }
         }
         reader.close();
+        graphStream.close();
         return buildingGraph.build();
     }
 }

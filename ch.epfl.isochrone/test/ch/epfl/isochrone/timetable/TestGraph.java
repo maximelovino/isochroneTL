@@ -143,6 +143,6 @@ public class TestGraph {
         Graph graph=buildingGraph.build();
         FastestPathTree path=graph.fastestPath(s1, SecondsPastMidnight.fromHMS(9,25, 0));
         int arrivalTime=path.arrivalTime(s2);
-        assertEquals(SecondsPastMidnight.fromHMS(9, 25, 0), arrivalTime);        
+        assertEquals(SecondsPastMidnight.fromHMS(9, 50, 0), arrivalTime);        
     }
 }

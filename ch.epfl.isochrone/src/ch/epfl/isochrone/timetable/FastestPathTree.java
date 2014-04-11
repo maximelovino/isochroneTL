@@ -73,7 +73,7 @@ public final class FastestPathTree {
      * @return The arrival time at that stop or SecondsPastMidnight.INFINITE if there is no arrival time defined
      */
     public int arrivalTime(Stop stop){
-        if(arrivalTime.get(stop)==null){
+        if(!arrivalTime.containsKey(stop)){
             return SecondsPastMidnight.INFINITE;
         }else{
             return arrivalTime.get(stop);

@@ -29,8 +29,7 @@ final class GraphEdge {
     public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips){
         this.destination=destination;
         this.walkingTime=walkingTime;
-        this.packedTrips=new ArrayList<Integer>(packedTrips);
-        Collections.sort(this.packedTrips);        
+        this.packedTrips=new ArrayList<Integer>(packedTrips);        
     }
 
     /**
@@ -99,20 +98,27 @@ final class GraphEdge {
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
     public int earliestArrivalTime(int departureTime){
+        
+        ArrayList<Integer> sortedTrips=new ArrayList<Integer>(this.packedTrips);
+        Collections.sort(sortedTrips);
 
         //      binary search: O(log(n)) complexity
-        int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
+        int index=Collections.binarySearch(sortedTrips,departureTime*10000);
 
         if(index<0){
             index=(index+1)*-1;
         }
         
-        if((index==packedTrips.size() && this.walkingTime==-1)||packedTrips.size()==0){
+        if(index==sortedTrips.size()){
+            index--;
+        }
+        
+        if(this.walkingTime==-1 && (sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime)){
             return SecondsPastMidnight.INFINITE;
-        }else if (this.walkingTime+departureTime<unpackTripArrivalTime(packedTrips.get(index))){
+        }else if (this.walkingTime!=-1 && this.walkingTime+departureTime<unpackTripArrivalTime(sortedTrips.get(index))){
             return this.walkingTime+departureTime;
         }else{
-            return unpackTripArrivalTime(packedTrips.get(index));
+            return unpackTripArrivalTime(sortedTrips.get(index));
         }
         
 

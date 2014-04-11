@@ -62,15 +62,13 @@ public final class Graph {
         
         queue.addAll(stops);
         
-        Stop actualStop;
-        int actualTime;
-        
+
         while(!queue.isEmpty()){
-            actualStop=queue.remove();
-            actualTime=treeBuilder.arrivalTime(actualStop);
+            Stop actualStop=queue.remove();
+            int actualTime=treeBuilder.arrivalTime(actualStop);
             
             if(actualTime==SecondsPastMidnight.INFINITE){
-                continue;
+                break;
             }
             
             List<GraphEdge> listEdge=this.outgoingEdges.get(actualStop);
@@ -85,6 +83,8 @@ public final class Graph {
                         queue.add(aStop);
                     }
                 }
+            }else{
+                continue;
             }
             
         }
@@ -179,16 +179,14 @@ public final class Graph {
 
             //          if it's null, we create it and we continue with the one we created
             if(m==null){
-                Map<Stop, GraphEdge.Builder> newM=new HashMap<Stop,GraphEdge.Builder>();
-                m=newM;
+                m=new HashMap<Stop,GraphEdge.Builder>();
             }
 
             //          We get the GraphEdge.Builder for the arrivalStop from the map
             GraphEdge.Builder builder=m.get(toStop);
             //          if it's null, we create it and we continue with the one we created
             if(builder==null){
-                GraphEdge.Builder b=new GraphEdge.Builder(toStop);
-                builder=b;
+                builder=new GraphEdge.Builder(toStop);
             }
 
             //          We are always sure to have a builder, because if it doesn't exist, we create one, and if it exists, we pick it
