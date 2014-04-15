@@ -188,7 +188,10 @@ public final class Graph {
             if(builder==null){
                 builder=new GraphEdge.Builder(toStop);
             }
-
+            
+            m.put(toStop, builder);
+            buildingEdges.put(fromStop, m);
+            
             //          We are always sure to have a builder, because if it doesn't exist, we create one, and if it exists, we pick it
             return builder;
         }

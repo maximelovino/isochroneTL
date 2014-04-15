@@ -25,8 +25,13 @@ final class GraphEdge {
      *      The time to go to the destination walking
      * @param packedTrips
      *      The set of possible trips from that edge to that destination
+     * @throws IllegalArgumentException
+     *      If walking time is smaller than -1
      */
     public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips){
+        if(walkingTime<-1){
+            throw new IllegalArgumentException();
+        }
         this.destination=destination;
         this.walkingTime=walkingTime;
         this.packedTrips=new ArrayList<Integer>(packedTrips);        
@@ -113,13 +118,26 @@ final class GraphEdge {
             index--;
         }
         
-        if(this.walkingTime==-1 && (sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime)){
+        int walkingArrivalTime=this.walkingTime+departureTime;
+        int transitArrivalTime=unpackTripArrivalTime(sortedTrips.get(index));
+        
+        if(this.walkingTime==-1){
             return SecondsPastMidnight.INFINITE;
-        }else if (this.walkingTime!=-1 && this.walkingTime+departureTime<unpackTripArrivalTime(sortedTrips.get(index))){
-            return this.walkingTime+departureTime;
-        }else{
-            return unpackTripArrivalTime(sortedTrips.get(index));
         }
+        
+        if (walkingArrivalTime<transitArrivalTime||sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime){
+            return walkingArrivalTime;
+        }else{
+            return transitArrivalTime;
+        }
+        
+//        if(this.walkingTime==-1 && (sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime)){
+//            return SecondsPastMidnight.INFINITE;
+//        }else if (this.walkingTime!=-1 && this.walkingTime+departureTime<unpackTripArrivalTime(sortedTrips.get(index))){
+//            return this.walkingTime+departureTime;
+//        }else{
+//            return unpackTripArrivalTime(sortedTrips.get(index));
+//        }
         
 
 

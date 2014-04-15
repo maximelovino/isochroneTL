@@ -19,12 +19,19 @@ public final class OSMTileProvider implements TileProvider {
         int xt=(int)Math.floor(x/256);
         int yt=(int)Math.floor(y/256);    
         
-        BufferedImage image= ImageIO.read(new URL(baseResourceName+"/"+zoom+"/"+x+"/"+y+".png"));
-        
-        if(image==null){
-            image=ImageIO.read(/images/error-tile.png);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new URL(baseResourceName+"/"+zoom+"/"+x+"/"+y+".png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            try {
+                image=ImageIO.read(getClass().getResource("/images/error-tile.png"));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
-        
+                
         return new Tile(zoom,xt,yt,image);
     }
 
