@@ -23,11 +23,9 @@ public final class OSMTileProvider implements TileProvider {
         try {
             image = ImageIO.read(new URL(baseResourceName+"/"+zoom+"/"+x+"/"+y+".png"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             try {
                 image=ImageIO.read(getClass().getResource("/images/error-tile.png"));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
