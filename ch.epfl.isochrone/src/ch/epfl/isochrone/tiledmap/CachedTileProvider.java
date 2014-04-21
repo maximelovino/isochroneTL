@@ -4,9 +4,9 @@ public final class CachedTileProvider implements TileProvider {
     private final OSMTileProvider osmTiles;
     TileCache cache;
     
-    public CachedTileProvider(OSMTileProvider osmTiles){
+    public CachedTileProvider(OSMTileProvider osmTiles, int cacheSize){
         this.osmTiles=osmTiles;
-        this.cache=new TileCache(100);
+        this.cache=new TileCache(cacheSize);
     }
 
     @Override
