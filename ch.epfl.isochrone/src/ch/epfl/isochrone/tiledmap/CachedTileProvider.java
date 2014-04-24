@@ -16,7 +16,6 @@ public final class CachedTileProvider implements TileProvider {
         if(tile==null){
             tile=osmTiles.tileAt(zoom, x, y);
         }
-        // TODO Auto-generated method stub
         return tile;
     }
 

@@ -1,6 +1,5 @@
 package ch.epfl.isochrone.tiledmap;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
