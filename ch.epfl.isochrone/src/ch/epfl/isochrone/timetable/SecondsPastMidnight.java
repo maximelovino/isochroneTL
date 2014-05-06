@@ -72,9 +72,10 @@ public final class SecondsPastMidnight {
      *      If the time exceeds 29:59:59
      */
     public static int minutes(int spm){
-        spm=spm-(hours(spm)*3600);
-        
-        return divF(spm,60);
+        if(spm<0||spm>fromHMS(29,59,59)){
+            throw new IllegalArgumentException("the time is invalid");
+        }
+        return divF(modF(spm,3600),60);
     }
     
     /**
@@ -85,9 +86,10 @@ public final class SecondsPastMidnight {
      *      If the time exceeds 29:59:59
      */
     public static int seconds(int spm){
-        spm=spm-(hours(spm)*3600)-(minutes(spm)*60);
-        
-        return spm;
+        if(spm<0||spm>fromHMS(29,59,59)){
+            throw new IllegalArgumentException("the time is invalid");
+        }        
+        return spm%60;
     }
     
     /**

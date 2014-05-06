@@ -34,7 +34,8 @@ final class GraphEdge {
         }
         this.destination=destination;
         this.walkingTime=walkingTime;
-        this.packedTrips=new ArrayList<Integer>(packedTrips);        
+        this.packedTrips=new ArrayList<Integer>(packedTrips); 
+        Collections.sort(this.packedTrips);
     }
 
     /**
@@ -103,44 +104,30 @@ final class GraphEdge {
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
     public int earliestArrivalTime(int departureTime){
-        
-        ArrayList<Integer> sortedTrips=new ArrayList<Integer>(this.packedTrips);
-        Collections.sort(sortedTrips);
 
         //      binary search: O(log(n)) complexity
-        int index=Collections.binarySearch(sortedTrips,departureTime*10000);
+        int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
 
         if(index<0){
             index=(index+1)*-1;
         }
         
-        if(index==sortedTrips.size()){
+        if(index==this.packedTrips.size()){
             index--;
         }
         
         int walkingArrivalTime=this.walkingTime+departureTime;
-        int transitArrivalTime=unpackTripArrivalTime(sortedTrips.get(index));
+        int transitArrivalTime=unpackTripArrivalTime(this.packedTrips.get(index));
         
         if(this.walkingTime==-1){
             return SecondsPastMidnight.INFINITE;
         }
         
-        if (walkingArrivalTime<transitArrivalTime||sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime){
+        if (walkingArrivalTime<transitArrivalTime||this.packedTrips.isEmpty()||this.packedTrips.get(index)<departureTime){
             return walkingArrivalTime;
         }else{
             return transitArrivalTime;
         }
-        
-//        if(this.walkingTime==-1 && (sortedTrips.isEmpty()||sortedTrips.get(index)<departureTime)){
-//            return SecondsPastMidnight.INFINITE;
-//        }else if (this.walkingTime!=-1 && this.walkingTime+departureTime<unpackTripArrivalTime(sortedTrips.get(index))){
-//            return this.walkingTime+departureTime;
-//        }else{
-//            return unpackTripArrivalTime(sortedTrips.get(index));
-//        }
-        
-
-
     }
 
     /**The static nested builder class for a GraphEdge

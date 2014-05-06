@@ -12,7 +12,7 @@ import static ch.epfl.isochrone.math.Math.*;
  * @author Julie Djeffal (193164)
  */
 public final class PointWGS84 {
-    private final int R=6378137;
+    private final static int R=6378137;
     private final double longitude;
     private final double latitude;
 

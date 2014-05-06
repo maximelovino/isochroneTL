@@ -56,14 +56,7 @@ public final class FastestPathTree {
      * @return A set of the stops for which an arrival time exists
      */
     public Set<Stop> stops(){
-        Set<Stop> stops=new HashSet<Stop>();
-
-        for(Stop aStop: this.arrivalTime.keySet()){
-            if(!(arrivalTime.get(aStop)==null)){
-                stops.add(aStop);
-            }
-        }
-
+        Set<Stop> stops=new HashSet<Stop>(this.arrivalTime.keySet());
         return stops;
     }
 
