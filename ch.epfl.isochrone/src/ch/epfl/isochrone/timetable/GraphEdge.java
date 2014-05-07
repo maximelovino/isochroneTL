@@ -109,25 +109,21 @@ final class GraphEdge {
         int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
 
         if(index<0){
-            index=(index+1)*-1;
+            index=(index+1)*(-1);
         }
         
-        if(index==this.packedTrips.size()){
-            index--;
-        }
-        
-        int walkingArrivalTime=this.walkingTime+departureTime;
-        int transitArrivalTime=unpackTripArrivalTime(this.packedTrips.get(index));
-        
-        if(this.walkingTime==-1){
+        if (walkingTime<0 && (this.packedTrips.isEmpty()||index==this.packedTrips.size())){
             return SecondsPastMidnight.INFINITE;
-        }
-        
-        if (walkingArrivalTime<transitArrivalTime||this.packedTrips.isEmpty()||this.packedTrips.get(index)<departureTime){
-            return walkingArrivalTime;
+        }else if((this.packedTrips.isEmpty()||index==this.packedTrips.size())){
+            return this.walkingTime+departureTime;
         }else{
-            return transitArrivalTime;
+            if (this.walkingTime+departureTime<unpackTripArrivalTime(this.packedTrips.get(index))){
+                return this.walkingTime+departureTime;
+            }else{
+                return unpackTripArrivalTime(this.packedTrips.get(index));
+            }
         }
+
     }
 
     /**The static nested builder class for a GraphEdge
