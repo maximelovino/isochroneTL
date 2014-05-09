@@ -10,6 +10,10 @@ public final class ColorTable {
     
     
     public ColorTable(int sliceLength, List<Color> colors){
+        if(colors.isEmpty()){
+            throw new IllegalArgumentException("the color table is empty");
+        }
+        
         this.sliceLength=sliceLength;
         this.colors=new ArrayList<Color>(colors);
     }
