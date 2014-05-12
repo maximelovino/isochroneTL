@@ -43,7 +43,7 @@ public final class IsochroneTL {
     private final TiledMapComponent tiledMapComponent;
 
     public IsochroneTL() throws IOException {
-        TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(new URL(OSM_TILE_URL)));
+        TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
 
         // TODO à compléter
