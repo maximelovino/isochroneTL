@@ -103,27 +103,48 @@ final class GraphEdge {
      *      The time of departure
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
-    public int earliestArrivalTime(int departureTime){
+//    public int earliestArrivalTime(int departureTime){
+//
+//        //      binary search: O(log(n)) complexity
+//        int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
+//
+//        if(index<0){
+//            index=(index+1)*(-1);
+//        }
+//        
+//        if (walkingTime<0 && (this.packedTrips.isEmpty()||index==this.packedTrips.size())){
+//            return SecondsPastMidnight.INFINITE;
+//        }else if((this.packedTrips.isEmpty()||index==this.packedTrips.size())){
+//            return this.walkingTime+departureTime;
+//        }else{
+//            if (this.walkingTime+departureTime<unpackTripArrivalTime(this.packedTrips.get(index))){
+//                return this.walkingTime+departureTime;
+//            }else{
+//                return unpackTripArrivalTime(this.packedTrips.get(index));
+//            }
+//        }
+//
+//    }
+    public int earliestArrivalTime(int departureTime) {
+        int pos = Collections.binarySearch(packedTrips, departureTime * 10000);
+        int earliest;
 
-        //      binary search: O(log(n)) complexity
-        int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
-
-        if(index<0){
-            index=(index+1)*(-1);
-        }
-        
-        if (walkingTime<0 && (this.packedTrips.isEmpty()||index==this.packedTrips.size())){
-            return SecondsPastMidnight.INFINITE;
-        }else if((this.packedTrips.isEmpty()||index==this.packedTrips.size())){
-            return this.walkingTime+departureTime;
-        }else{
-            if (this.walkingTime+departureTime<unpackTripArrivalTime(this.packedTrips.get(index))){
-                return this.walkingTime+departureTime;
-            }else{
-                return unpackTripArrivalTime(this.packedTrips.get(index));
+        if (packedTrips.size() == 0) {
+            earliest = SecondsPastMidnight.INFINITE;
+        } else {
+            if (departureTime > unpackTripDepartureTime(packedTrips.get(packedTrips.size() - 1))) {
+                earliest = SecondsPastMidnight.INFINITE;
+            } else if (pos < 0) {
+                earliest = unpackTripArrivalTime(packedTrips.get(-pos - 1));
+            } else {
+                earliest = unpackTripArrivalTime(packedTrips.get(pos));
             }
         }
-
+        if (walkingTime == -1) {
+            return earliest;
+        }
+        
+        return Math.min(earliest, departureTime + walkingTime);
     }
 
     /**The static nested builder class for a GraphEdge

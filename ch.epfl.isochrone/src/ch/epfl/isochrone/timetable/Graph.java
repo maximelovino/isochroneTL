@@ -68,7 +68,7 @@ public final class Graph {
             int actualTime=treeBuilder.arrivalTime(actualStop);
             
             if(actualTime==SecondsPastMidnight.INFINITE){
-                break;
+                return treeBuilder.build();
             }
             
             List<GraphEdge> listEdge=this.outgoingEdges.get(actualStop);
