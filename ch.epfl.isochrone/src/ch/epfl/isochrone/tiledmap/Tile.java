@@ -17,4 +17,8 @@ public final class Tile{
         
         this.image=image;
     }
+    
+    public BufferedImage getImage(){
+        return this.image;
+    }
 }
