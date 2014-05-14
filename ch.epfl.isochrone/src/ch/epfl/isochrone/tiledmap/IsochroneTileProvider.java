@@ -14,6 +14,14 @@ public final class IsochroneTileProvider implements TileProvider{
     private final int walkingSpeed;
 
 
+    /**
+     * @param path 
+			The fastest path tree
+     * @param colors 
+     * 		A color table
+     * @param walkingSpeed 
+     * 		A walking speed
+     */
     public IsochroneTileProvider(FastestPathTree path, ColorTable colors, int walkingSpeed){
         this.path=path;
         this.colors=colors;
@@ -21,6 +29,9 @@ public final class IsochroneTileProvider implements TileProvider{
     }
 
 
+    /* (non-Javadoc)
+     * @see ch.epfl.isochrone.tiledmap.TileProvider#tileAt(int, int, int)
+     */
     @Override
     public Tile tileAt(int zoom, int x, int y) {
         BufferedImage i=new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);

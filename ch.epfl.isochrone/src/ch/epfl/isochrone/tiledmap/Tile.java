@@ -10,6 +10,17 @@ public final class Tile{
     private final int y;
     private final int zoom;
     
+    
+    /**
+     * @param zoom 
+     * 		The zoom of the Tile
+     * @param x
+     * 		The first coordinate of the Tile
+     * @param y
+     * 		The second coordinate of the Tile
+     * @param image
+     * 		The image of the Tile
+     */
     public Tile(int zoom, int x, int y, BufferedImage image){  
         this.zoom=zoom;
         this.x=x;
@@ -18,6 +29,9 @@ public final class Tile{
         this.image=image;
     }
     
+    /**
+     * @return The image of the Tile
+     */
     public BufferedImage getImage(){
         return this.image;
     }

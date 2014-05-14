@@ -19,10 +19,29 @@ public final class TileCache {
         };
     }
     
+    /**
+     * @param zoom
+     * 		The zoom of the tile
+     * @param x
+     * 		The first coordinate of the tile
+     * @param y
+     * 		The second coordinate of the tile
+     * @param tile 
+     * 		The tile 
+     */
     public void put(int zoom, int x, int y, Tile tile){
         cache.put(encodeCoordinates(zoom, x, y), tile);
     }
     
+    /**
+     * @param zoom
+     * 		The zoom
+     * @param x
+     * 		The first coordinate
+     * @param y 
+     * 		The second coordinate
+     * @return The tile associated by the coordinates if it exists
+     */
     public Tile get(int zoom, int x, int y){
         Tile tile=cache.get(encodeCoordinates(zoom, x, y));
         

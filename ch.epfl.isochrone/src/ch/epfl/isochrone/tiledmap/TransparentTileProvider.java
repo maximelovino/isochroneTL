@@ -9,6 +9,12 @@ public final class TransparentTileProvider extends FilteringTileProvider {
     private final double alphaChannel;
     private final TileProvider tp;
     
+    /**
+     * @param alphaChannel
+     * 		Opacity
+     * @param tp
+     * 		A TileProvider
+     */
     public TransparentTileProvider(double alphaChannel, TileProvider tp){
         if(alphaChannel<0||alphaChannel>1){
             throw new IllegalArgumentException("the alpha value is not valid");
@@ -17,6 +23,9 @@ public final class TransparentTileProvider extends FilteringTileProvider {
         this.alphaChannel=alphaChannel;
     }
 
+    /* (non-Javadoc)
+     * @see ch.epfl.isochrone.tiledmap.TileProvider#tileAt(int, int, int)
+     */
     @Override
     public Tile tileAt(int zoom, int x, int y) {
         // TODO Auto-generated method stub
@@ -34,6 +43,9 @@ public final class TransparentTileProvider extends FilteringTileProvider {
         return new Tile(zoom, x, y, transformed);
     }
 
+    /* (non-Javadoc)
+     * @see ch.epfl.isochrone.tiledmap.FilteringTileProvider#transformARGB(int)
+     */
     @Override
     public int transformARGB(int colorARGB) {        
         int a=(1/255)*modF(divF(colorARGB,(int)Math.pow(2,24)),(int)Math.pow(2,8));
