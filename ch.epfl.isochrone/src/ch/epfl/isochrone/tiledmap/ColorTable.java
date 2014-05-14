@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class ColorTable {
     private final List<Color> colors;
     private final int sliceLength;
@@ -14,6 +19,8 @@ public final class ColorTable {
      * 		Time (sec)
      * @param colors 
      * 		A list of colors
+     * @throws IllegalArgumentException
+     *      If the list of colors is empty
      */
     public ColorTable(int sliceLength, List<Color> colors){
         if(colors.isEmpty()){

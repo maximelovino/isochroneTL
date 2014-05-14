@@ -8,6 +8,11 @@ import ch.epfl.isochrone.geo.PointOSM;
 import ch.epfl.isochrone.timetable.FastestPathTree;
 import ch.epfl.isochrone.timetable.Stop;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class IsochroneTileProvider implements TileProvider{
     private final FastestPathTree path;
     private final ColorTable colors;

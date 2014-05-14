@@ -1,8 +1,13 @@
 package ch.epfl.isochrone.tiledmap;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class CachedTileProvider implements TileProvider {
     private final OSMTileProvider osmTiles;
-    TileCache cache;
+    private final TileCache cache;
     
     /**
      * @param osmTiles

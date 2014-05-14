@@ -4,6 +4,11 @@ import static ch.epfl.isochrone.math.Math.*;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class TransparentTileProvider extends FilteringTileProvider {
     
     private final double alphaChannel;
@@ -45,6 +50,7 @@ public final class TransparentTileProvider extends FilteringTileProvider {
 
     /* (non-Javadoc)
      * @see ch.epfl.isochrone.tiledmap.FilteringTileProvider#transformARGB(int)
+     * 
      */
     @Override
     public int transformARGB(int colorARGB) {        

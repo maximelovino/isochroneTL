@@ -5,10 +5,19 @@ import java.util.Map;
 
 import ch.epfl.isochrone.geo.PointOSM;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class TileCache {
     private final Map<PointOSM, Tile> cache;
     private final int MAX_SIZE;
     
+    /**
+     * @param maxSize
+     *      The max size of the cache
+     */
     public TileCache(int maxSize){
         this.MAX_SIZE=maxSize;
         this.cache=new LinkedHashMap<PointOSM, Tile>(){

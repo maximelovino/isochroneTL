@@ -7,6 +7,11 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class OSMTileProvider implements TileProvider {
 	
     private final String baseResourceName;
