@@ -77,5 +77,9 @@ public final class TiledMapComponent extends JComponent {
     public void addTileProvider(TileProvider tp){
         providers.add(tp);
     }
+    
+    public int zoom(){
+        return zoomLevel;
+    }
 
 }
