@@ -15,6 +15,7 @@ public final class CachedTileProvider implements TileProvider {
         
         if(tile==null){
             tile=osmTiles.tileAt(zoom, x, y);
+            cache.put(zoom, x, y, tile);
         }
         return tile;
     }
