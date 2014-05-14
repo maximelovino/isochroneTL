@@ -16,7 +16,7 @@ import ch.epfl.isochrone.timetable.Stop;
 public final class IsochroneTileProvider implements TileProvider{
     private final FastestPathTree path;
     private final ColorTable colors;
-    private final int walkingSpeed;
+    private final double walkingSpeed;
 
 
     /**
@@ -27,7 +27,7 @@ public final class IsochroneTileProvider implements TileProvider{
      * @param walkingSpeed 
      * 		A walking speed
      */
-    public IsochroneTileProvider(FastestPathTree path, ColorTable colors, int walkingSpeed){
+    public IsochroneTileProvider(FastestPathTree path, ColorTable colors, double walkingSpeed){
         this.path=path;
         this.colors=colors;
         this.walkingSpeed=walkingSpeed;

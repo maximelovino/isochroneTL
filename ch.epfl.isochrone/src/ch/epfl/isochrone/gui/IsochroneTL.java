@@ -8,7 +8,9 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -24,11 +26,20 @@ import javax.swing.SwingConstants;
 import ch.epfl.isochrone.geo.PointOSM;
 import ch.epfl.isochrone.geo.PointWGS84;
 import ch.epfl.isochrone.tiledmap.CachedTileProvider;
+import ch.epfl.isochrone.tiledmap.ColorTable;
+import ch.epfl.isochrone.tiledmap.IsochroneTileProvider;
 import ch.epfl.isochrone.tiledmap.OSMTileProvider;
 import ch.epfl.isochrone.tiledmap.TileProvider;
+import ch.epfl.isochrone.tiledmap.TransparentTileProvider;
 import ch.epfl.isochrone.timetable.Date;
 import ch.epfl.isochrone.timetable.Date.Month;
+import ch.epfl.isochrone.timetable.FastestPathTree;
+import ch.epfl.isochrone.timetable.Graph;
 import ch.epfl.isochrone.timetable.SecondsPastMidnight;
+import ch.epfl.isochrone.timetable.Service;
+import ch.epfl.isochrone.timetable.Stop;
+import ch.epfl.isochrone.timetable.TimeTable;
+import ch.epfl.isochrone.timetable.TimeTableReader;
 
 public final class IsochroneTL {
     private static final String OSM_TILE_URL = "http://b.tile.openstreetmap.org/";
@@ -45,7 +56,40 @@ public final class IsochroneTL {
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
+        
+        TimeTableReader reader=new TimeTableReader("/time-table/");
+        TimeTable table=reader.readTimeTable();
+        Set<Service> services=table.servicesForDate(INITIAL_DATE);
+        Set<Stop> stops=table.stops();
+        
+        Stop startingStop=null;
+        
+        for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
+            Stop stop = (Stop) iterator.next();
 
+            if(stop.name().equals(INITIAL_STARTING_STOP_NAME)){
+                startingStop=stop;
+            }
+
+        }
+        
+        Graph graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+
+        FastestPathTree path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
+        
+        OSMTileProvider osmTP=new OSMTileProvider(OSM_TILE_URL);
+        CachedTileProvider cachedTP=new CachedTileProvider(osmTP, 100);
+        
+        ArrayList<Color> colorsList=new ArrayList<Color>();
+        
+        ColorTable colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
+        
+        IsochroneTileProvider isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
+        
+        TransparentTileProvider transTP=new TransparentTileProvider(0.5, isoTP);
+        
+        tiledMapComponent.addTileProvider(cachedTP);
+        tiledMapComponent.addTileProvider(transTP);
         // TODO à compléter
     }
 

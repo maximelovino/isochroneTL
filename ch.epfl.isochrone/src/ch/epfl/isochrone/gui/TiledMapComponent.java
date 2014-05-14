@@ -38,36 +38,28 @@ public final class TiledMapComponent extends JComponent {
         
         Rectangle r=getVisibleRect();
         
-        int width=(int)Math.ceil(r.getWidth());
-        int height=(int)Math.ceil(r.getHeight());
-        
-
-        
+                
         double minX=r.getMinX();
         double minY=r.getMinY();
         
-        int tileNumLeft=divF((int)minX,256);
-        int tileNumLeftXCoordinate=(tileNumLeft-1)*256;
+        int tileNumLeft=divF((int)minX,256)*256;
         
-        int tileNumUp=divF((int)minY,256);
-        int tileNumUpYCoordinate=(tileNumUp-1)*256;        
+        int tileNumUp=divF((int)minY,256)*256;       
         
         double maxX=r.getMaxX();
         double maxY=r.getMaxY();
         
-        int tileNumDown=divF((int)maxY,256);
-        int tileNumDownYCoordinate=(tileNumDown-1)*256;
+        int tileNumDown=divF((int)maxY,256)*256;
         
-        int tileNumRight=divF((int)maxX,256);
-        int tileNumRightXCoordinate=(tileNumRight-1)*256;    
+        int tileNumRight=divF((int)maxX,256)*256;    
         
-        image=new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        image=new BufferedImage(tileNumRight-tileNumLeft, tileNumDown-tileNumUp, BufferedImage.TYPE_INT_ARGB);
         
         
-        for(int x=tileNumLeft;x<=tileNumRight+256;x=x+256){
-            for(int y=tileNumUp;y<=tileNumDown+256;y=y+256){
+        for(int x=tileNumLeft;x<=tileNumRight;x=x+256){
+            for(int y=tileNumUp;y<=tileNumDown;y=y+256){
                 for(TileProvider tp:providers){
-                    g.drawImage(tp.tileAt(zoomLevel, x, y).getImage(),null,x*256,y*256);
+                    g.drawImage(tp.tileAt(zoomLevel, x, y).getImage(),null,x,y);
                 }
             }
         }
