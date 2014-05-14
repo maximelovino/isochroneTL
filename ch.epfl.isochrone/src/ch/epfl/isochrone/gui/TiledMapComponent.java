@@ -64,7 +64,13 @@ public final class TiledMapComponent extends JComponent {
         image=new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         
         
-        
+        for(int x=tileNumLeft;x<=tileNumRight+256;x=x+256){
+            for(int y=tileNumUp;y<=tileNumDown+256;y=y+256){
+                for(TileProvider tp:providers){
+                    g.drawImage(tp.tileAt(zoomLevel, x, y).getImage(),null,x*256,y*256);
+                }
+            }
+        }
         
     }
     
