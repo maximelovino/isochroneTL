@@ -77,10 +77,17 @@ public final class IsochroneTL {
 
         FastestPathTree path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
         
-        OSMTileProvider osmTP=new OSMTileProvider(OSM_TILE_URL);
-        CachedTileProvider cachedTP=new CachedTileProvider(osmTP, 100);
         
         ArrayList<Color> colorsList=new ArrayList<Color>();
+        
+        colorsList.add(new Color(255, 122, 0));
+        colorsList.add(new Color(255, 255, 0));
+        colorsList.add(new Color(122, 255, 0));
+        colorsList.add(new Color(0, 255, 0));
+        colorsList.add(new Color(0, 122, 122));
+        colorsList.add(new Color(0, 0, 255));
+        colorsList.add(new Color(0, 0, 122));
+        colorsList.add(new Color(0, 0, 0));
         
         ColorTable colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
         
@@ -88,7 +95,7 @@ public final class IsochroneTL {
         
         TransparentTileProvider transTP=new TransparentTileProvider(0.5, isoTP);
         
-        tiledMapComponent.addTileProvider(cachedTP);
+        tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
         // TODO à compléter
     }
