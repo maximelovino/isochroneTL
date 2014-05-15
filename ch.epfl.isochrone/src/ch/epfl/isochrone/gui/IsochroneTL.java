@@ -80,13 +80,13 @@ public final class IsochroneTL {
         
         ArrayList<Color> colorsList=new ArrayList<Color>();
         
-        colorsList.add(new Color(255, 122, 0));
+        colorsList.add(new Color(255, 128, 0));
         colorsList.add(new Color(255, 255, 0));
-        colorsList.add(new Color(122, 255, 0));
+        colorsList.add(new Color(128, 255, 0));
         colorsList.add(new Color(0, 255, 0));
-        colorsList.add(new Color(0, 122, 122));
+        colorsList.add(new Color(0, 128, 128));
         colorsList.add(new Color(0, 0, 255));
-        colorsList.add(new Color(0, 0, 122));
+        colorsList.add(new Color(0, 0, 128));
         colorsList.add(new Color(0, 0, 0));
         
         ColorTable colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
