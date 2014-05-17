@@ -122,6 +122,7 @@ final class GraphEdge {
                 time=unpackTripArrivalTime(packedTrips.get(index));
             }
         }
+        
         if(walkingTime==-1){
             return time;
         }else{
