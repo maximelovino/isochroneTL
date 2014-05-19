@@ -10,6 +10,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,12 +57,12 @@ public final class IsochroneTL {
     private static final double WALKING_SPEED = 1.25;
 
     private final TiledMapComponent tiledMapComponent;
-    private int zoom=INITIAL_ZOOM;
-    private Point mousePosition;
+    private Point mouseStartPosition;
+    private Point viewPosition;
 
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
-        tiledMapComponent = new TiledMapComponent(zoom);
+        tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
 
         TimeTableReader reader=new TimeTableReader("/time-table/");
         TimeTable table=reader.readTimeTable();
@@ -104,8 +105,6 @@ public final class IsochroneTL {
 
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
-
-        // TODO à compléter
     }
 
     private JComponent createCenterPanel() {
@@ -139,34 +138,54 @@ public final class IsochroneTL {
 
             @Override
             public void mousePressed(MouseEvent e){
-                mousePosition=e.getLocationOnScreen();
-                Point mapClick=viewPort.getViewPosition();
+                mouseStartPosition=e.getLocationOnScreen();
+                viewPosition=viewPort.getViewPosition();
             }
         });
 
         layeredPane.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){
-                Point clickPoint=e.getLocationOnScreen();
-                viewPort.setViewPosition(clickPoint);
-                viewPort.revalidate();
-                copyrightPanel.revalidate();
+                int x=(int) Math.round(e.getLocationOnScreen().getX());
+                int y=(int) Math.round(e.getLocationOnScreen().getY());
+
+                int windowX=(int) Math.round(viewPosition.getX());
+                int windowY=(int) Math.round(viewPosition.getY());
+
+                int mouseX=(int) Math.round(mouseStartPosition.getX());
+                int mouseY=(int) Math.round(mouseStartPosition.getY());
+
+                Point point=new Point(windowX-x+mouseX, windowY-y+mouseY);
+                viewPort.setViewPosition(point);
             }
         });
 
-        // TODO déplacement de la carte à la souris
-        // TODO zoom de la carte à la souris (molette)
-        
-        layeredPane.addMouseWheelListener(new MouseAdapter() {
-        	@Override
-        	public void mouseWheelMoved(MouseWheelEvent e){
-        		int rotation=e.getWheelRotation();
-        		zoom=zoom-rotation;
-        		viewPort.revalidate();
-        		Point point=e.getPoint();
-        	}
-        	
-		});
+
+        layeredPane.addMouseWheelListener(new MouseWheelListener() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int rotation=e.getWheelRotation();
+                mouseStartPosition=e.getPoint();
+                Point view=viewPort.getViewPosition().getLocation();
+                int newZoom=tiledMapComponent.zoom()-rotation;
+                PointOSM point=new PointOSM(tiledMapComponent.zoom(), view.getX()+mouseStartPosition.getX(), view.getY()+mouseStartPosition.getY());
+
+                if(newZoom>19)
+                    newZoom=19;
+                if(newZoom<10)
+                    newZoom=10;
+
+                point=point.atZoom(newZoom);
+                tiledMapComponent.setZoom(newZoom);
+                Point pointView=new Point((int)Math.round(point.roundedX()-mouseStartPosition.getX()), (int) Math.round(point.roundedY()-mouseStartPosition.getY()));
+                viewPort.setViewPosition(pointView);
+
+            }
+
+        });
+
+
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(layeredPane, BorderLayout.CENTER);

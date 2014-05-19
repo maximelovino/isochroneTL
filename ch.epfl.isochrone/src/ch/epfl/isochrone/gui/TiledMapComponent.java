@@ -16,7 +16,7 @@ import ch.epfl.isochrone.tiledmap.TileProvider;
 import static ch.epfl.isochrone.math.Math.*;
 
 public final class TiledMapComponent extends JComponent {
-    private final int zoomLevel;
+    private int zoomLevel;
     private final List<TileProvider> providers;
     
     public TiledMapComponent(int zoomLevel){
@@ -70,6 +70,13 @@ public final class TiledMapComponent extends JComponent {
     
     public int zoom(){
         return zoomLevel;
+    }
+    
+    public void setZoom(int newZoom){
+        if(zoomLevel<10||zoomLevel>19){
+            throw new IllegalArgumentException("niveau de zoom incorrect");
+        }
+        zoomLevel=newZoom;
     }
 
 }
