@@ -58,10 +58,7 @@ public final class IsochroneTileProvider implements TileProvider{
 
                     double xCoordinate=p.x()-(walkingSpeed*timeRemainder/xLength)-new PointOSM(zoom, x*256,y*256).roundedX();
                     double yCoordinate=p.y()-(walkingSpeed*timeRemainder/yLength)-new PointOSM(zoom, x*256,y*256).roundedY();
-                    if (xCoordinate > 0 && yCoordinate > 0) {
-                        System.out.println(xCoordinate);
-                        System.out.println(yCoordinate);
-                    }
+
 
                     g.setColor(colors.colorForSlice(k-1));
 

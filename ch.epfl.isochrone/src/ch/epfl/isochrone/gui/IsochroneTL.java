@@ -54,34 +54,36 @@ public final class IsochroneTL {
     private static final double WALKING_SPEED = 1.25;
 
     private final TiledMapComponent tiledMapComponent;
+    private final int zoom=INITIAL_ZOOM;
+    private Point mousePosition;
 
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
-        
+
         TimeTableReader reader=new TimeTableReader("/time-table/");
         TimeTable table=reader.readTimeTable();
         Set<Service> services=table.servicesForDate(INITIAL_DATE);
         Set<Stop> stops=table.stops();
-        
+
         Stop startingStop=null;
-        
+
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
- 
+
             if(stop.name().equals(INITIAL_STARTING_STOP_NAME)){
                 startingStop=stop;
             }
- 
+
         }
-        
+
         Graph graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
- 
+
         FastestPathTree path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
-        
-        
+
+
         ArrayList<Color> colorsList=new ArrayList<Color>();
-        
+
         colorsList.add(new Color(255,0,0));
         colorsList.add(new Color(255, 128, 0));
         colorsList.add(new Color(255, 255, 0));
@@ -91,13 +93,13 @@ public final class IsochroneTL {
         colorsList.add(new Color(0, 0, 255));
         colorsList.add(new Color(0, 0, 128));
         colorsList.add(new Color(0, 0, 0));
-        
+
         ColorTable colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
-        
+
         IsochroneTileProvider isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
-        
+
         TransparentTileProvider transTP=new TransparentTileProvider(0.5, isoTP);
-        
+
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
 
@@ -129,28 +131,26 @@ public final class IsochroneTL {
                 copyrightPanel.revalidate();
             }
         });
-        
-        
+
+
         layeredPane.addMouseListener(new MouseAdapter() {
-        	
-        	@Override
-        	public void mousePressed(MouseEvent e){
-        		Point click=e.getLocationOnScreen();
-        		Point mapClick=viewPort.getViewPosition();
-        	}
-        	
-        	public void mouseReleased(MouseEvent e){
-        		viewPort.setViewPosition(e.getLocationOnScreen());
-        	}
-		});
-        
+
+            @Override
+            public void mousePressed(MouseEvent e){
+                mousePosition=e.getLocationOnScreen();
+                Point mapClick=viewPort.getViewPosition();
+            }
+        });
+
         layeredPane.addMouseMotionListener(new MouseAdapter() {
-        	@Override
-        	public void mouseDragged(MouseEvent e){
-        		Point clickPoint=e.getLocationOnScreen();
-        		viewPort.setViewPosition(clickPoint);
-        	}
-		});
+            @Override
+            public void mouseDragged(MouseEvent e){
+                Point clickPoint=e.getLocationOnScreen();
+                viewPort.setViewPosition(clickPoint);
+                viewPort.revalidate();
+                copyrightPanel.revalidate();
+            }
+        });
 
         // TODO déplacement de la carte à la souris
         // TODO zoom de la carte à la souris (molette)
