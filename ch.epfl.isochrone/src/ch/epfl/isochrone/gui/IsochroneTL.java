@@ -9,6 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import ch.epfl.isochrone.geo.PointOSM;
 import ch.epfl.isochrone.geo.PointWGS84;
@@ -54,12 +56,12 @@ public final class IsochroneTL {
     private static final double WALKING_SPEED = 1.25;
 
     private final TiledMapComponent tiledMapComponent;
-    private final int zoom=INITIAL_ZOOM;
+    private int zoom=INITIAL_ZOOM;
     private Point mousePosition;
 
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
-        tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
+        tiledMapComponent = new TiledMapComponent(zoom);
 
         TimeTableReader reader=new TimeTableReader("/time-table/");
         TimeTable table=reader.readTimeTable();
@@ -154,6 +156,17 @@ public final class IsochroneTL {
 
         // TODO déplacement de la carte à la souris
         // TODO zoom de la carte à la souris (molette)
+        
+        layeredPane.addMouseWheelListener(new MouseAdapter() {
+        	@Override
+        	public void mouseWheelMoved(MouseWheelEvent e){
+        		int rotation=e.getWheelRotation();
+        		zoom=zoom-rotation;
+        		viewPort.revalidate();
+        		Point point=e.getPoint();
+        	}
+        	
+		});
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(layeredPane, BorderLayout.CENTER);
