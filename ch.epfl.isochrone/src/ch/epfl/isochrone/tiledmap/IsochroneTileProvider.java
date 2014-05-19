@@ -46,7 +46,7 @@ public final class IsochroneTileProvider implements TileProvider{
         double xLength= (new PointOSM(zoom, x*256,y*256).toWGS84()).distanceTo(new PointOSM(zoom, x*256+1, y*256).toWGS84());
         double yLength= (new PointOSM(zoom, x*256,y*256).toWGS84()).distanceTo(new PointOSM(zoom, x*256, y*256+1).toWGS84());
 
-        for(int k=colors.slicesNumber()-2;k>0;k--){
+        for(int k=colors.slicesNumber()-1;k>0;k--){
             int time=k*colors.slicesLength();
 
             for(Stop stop: path.stops()){
@@ -58,6 +58,10 @@ public final class IsochroneTileProvider implements TileProvider{
 
                     double xCoordinate=p.x()-(walkingSpeed*timeRemainder/xLength)-new PointOSM(zoom, x*256,y*256).roundedX();
                     double yCoordinate=p.y()-(walkingSpeed*timeRemainder/yLength)-new PointOSM(zoom, x*256,y*256).roundedY();
+                    if (xCoordinate > 0 && yCoordinate > 0) {
+                        System.out.println(xCoordinate);
+                        System.out.println(yCoordinate);
+                    }
 
                     g.setColor(colors.colorForSlice(k-1));
 

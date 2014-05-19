@@ -18,7 +18,6 @@ import static ch.epfl.isochrone.math.Math.*;
 public final class TiledMapComponent extends JComponent {
     private final int zoomLevel;
     private final List<TileProvider> providers;
-    private BufferedImage image;
     
     public TiledMapComponent(int zoomLevel){
         if(zoomLevel<10||zoomLevel>19){
@@ -42,24 +41,21 @@ public final class TiledMapComponent extends JComponent {
         double minX=r.getMinX();
         double minY=r.getMinY();
         
-        int tileNumLeft=divF((int)minX,256)*256;
+        int tileNumLeft=divF((int)minX,256);
         
-        int tileNumUp=divF((int)minY,256)*256;       
+        int tileNumUp=divF((int)minY,256);       
         
         double maxX=r.getMaxX();
         double maxY=r.getMaxY();
         
-        int tileNumDown=divF((int)maxY,256)*256;
+        int tileNumDown=(divF((int)maxY,256)+1);
         
-        int tileNumRight=divF((int)maxX,256)*256;    
+        int tileNumRight=(divF((int)maxX,256)+1);        
         
-        image=new BufferedImage(tileNumRight-tileNumLeft, tileNumDown-tileNumUp, BufferedImage.TYPE_INT_ARGB);
-        
-        
-        for(int x=tileNumLeft;x<=tileNumRight;x=x+256){
-            for(int y=tileNumUp;y<=tileNumDown;y=y+256){
+        for(int x=tileNumLeft;x<=tileNumRight;x++){
+            for(int y=tileNumUp;y<=tileNumDown;y++){
                 for(TileProvider tp:providers){
-                    g.drawImage(tp.tileAt(zoomLevel, x, y).getImage(),null,x,y);
+                    g.drawImage(tp.tileAt(zoomLevel, x, y).getImage(),x*256,y*256,null);
                 }
             }
         }

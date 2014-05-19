@@ -66,20 +66,21 @@ public final class IsochroneTL {
         
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
-
+ 
             if(stop.name().equals(INITIAL_STARTING_STOP_NAME)){
                 startingStop=stop;
             }
-
+ 
         }
         
         Graph graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
-
+ 
         FastestPathTree path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
         
         
         ArrayList<Color> colorsList=new ArrayList<Color>();
         
+        colorsList.add(new Color(255,0,0));
         colorsList.add(new Color(255, 128, 0));
         colorsList.add(new Color(255, 255, 0));
         colorsList.add(new Color(128, 255, 0));
@@ -97,6 +98,7 @@ public final class IsochroneTL {
         
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
+
         // TODO à compléter
     }
 
