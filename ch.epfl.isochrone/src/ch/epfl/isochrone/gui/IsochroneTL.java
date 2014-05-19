@@ -7,6 +7,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -127,6 +129,28 @@ public final class IsochroneTL {
                 copyrightPanel.revalidate();
             }
         });
+        
+        
+        layeredPane.addMouseListener(new MouseAdapter() {
+        	
+        	@Override
+        	public void mousePressed(MouseEvent e){
+        		Point click=e.getLocationOnScreen();
+        		Point mapClick=viewPort.getViewPosition();
+        	}
+        	
+        	public void mouseReleased(MouseEvent e){
+        		viewPort.setViewPosition(e.getLocationOnScreen());
+        	}
+		});
+        
+        layeredPane.addMouseMotionListener(new MouseAdapter() {
+        	@Override
+        	public void mouseDragged(MouseEvent e){
+        		Point clickPoint=e.getLocationOnScreen();
+        		viewPort.setViewPosition(clickPoint);
+        	}
+		});
 
         // TODO déplacement de la carte à la souris
         // TODO zoom de la carte à la souris (molette)
