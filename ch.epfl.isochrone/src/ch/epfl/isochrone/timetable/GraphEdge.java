@@ -28,13 +28,13 @@ final class GraphEdge {
      * @throws IllegalArgumentException
      *      If walking time is smaller than -1
      */
-    public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips){
-        if(walkingTime<-1){
+    public GraphEdge(Stop destination, int walkingTime, Set<Integer> packedTrips) {
+        if (walkingTime < -1) {
             throw new IllegalArgumentException();
         }
-        this.destination=destination;
-        this.walkingTime=walkingTime;
-        this.packedTrips=new ArrayList<Integer>(packedTrips); 
+        this.destination = destination;
+        this.walkingTime = walkingTime;
+        this.packedTrips = new ArrayList<Integer>(packedTrips); 
         Collections.sort(this.packedTrips);
     }
 
@@ -48,15 +48,15 @@ final class GraphEdge {
      * @throws IllegalArgumentException
      *      If the departureTime is negative or exceeds the 107999 and if the length is negative or exceeds 9999
      */
-    public static int packTrip(int departureTime, int arrivalTime) throws IllegalArgumentException{
-        if(departureTime<0||departureTime>107999){
+    public static int packTrip(int departureTime, int arrivalTime) throws IllegalArgumentException {
+        if (departureTime < 0 || departureTime > 107999) {
             throw new IllegalArgumentException("invalid departuretime");
         }
-        if(arrivalTime-departureTime<0||arrivalTime-departureTime>9999){
+        if (arrivalTime - departureTime < 0 || arrivalTime - departureTime > 9999) {
             throw new IllegalArgumentException("invalid trip length");
         }
 
-        int packedTrip=departureTime*10000+(arrivalTime-departureTime);
+        int packedTrip = departureTime * 10000 + (arrivalTime - departureTime);
 
         return packedTrip;
     }
@@ -67,8 +67,8 @@ final class GraphEdge {
      * @return
      *      The departure time decoded
      */
-    public static int unpackTripDepartureTime(int packedTrip){
-        return divF(packedTrip,10000);
+    public static int unpackTripDepartureTime(int packedTrip) {
+        return divF(packedTrip, 10000);
     }
 
     /**
@@ -77,8 +77,8 @@ final class GraphEdge {
      * @return
      *      The duration decoded
      */
-    public static int unpackTripDuration(int packedTrip){
-        return modF(packedTrip,10000);
+    public static int unpackTripDuration(int packedTrip) {
+        return modF(packedTrip, 10000);
     }
 
     /**
@@ -87,14 +87,14 @@ final class GraphEdge {
      * @return
      *      The arrival time decoded
      */
-    public static int unpackTripArrivalTime(int packedTrip){
-        return unpackTripDepartureTime(packedTrip)+unpackTripDuration(packedTrip);
+    public static int unpackTripArrivalTime(int packedTrip) {
+        return unpackTripDepartureTime(packedTrip) + unpackTripDuration(packedTrip);
     }
 
     /**
      * @return the destination
      */
-    public Stop destination(){
+    public Stop destination() {
         return destination;
     }
 
@@ -103,29 +103,29 @@ final class GraphEdge {
      *      The time of departure
      * @return The earliest arrival time to the destination, either walking or using public transportation
      */
-    public int earliestArrivalTime(int departureTime){
+    public int earliestArrivalTime(int departureTime) {
 
         //      binary search: O(log(n)) complexity
-        int index=Collections.binarySearch(this.packedTrips,departureTime*10000);
+        int index = Collections.binarySearch(this.packedTrips, departureTime * 10000);
 
-        if(index<0){
-            index=(index+1)*(-1);
+        if (index < 0) {
+            index = (index + 1) * (-1);
         }
         int time;
         
-        if(packedTrips.isEmpty()){
-            time=SecondsPastMidnight.INFINITE;
-        }else{
-            if(departureTime>unpackTripDepartureTime(packedTrips.get(packedTrips.size()-1))){
-                time=SecondsPastMidnight.INFINITE;
-            }else{
-                time=unpackTripArrivalTime(packedTrips.get(index));
+        if (packedTrips.isEmpty()) {
+            time = SecondsPastMidnight.INFINITE;
+        } else {
+            if (departureTime > unpackTripDepartureTime(packedTrips.get(packedTrips.size() - 1))) {
+                time = SecondsPastMidnight.INFINITE;
+            } else {
+                time = unpackTripArrivalTime(packedTrips.get(index));
             }
         }
         
-        if(walkingTime==-1){
+        if (walkingTime == -1) {
             return time;
-        }else{
+        } else {
             return Math.min(time, departureTime+walkingTime);
         }
         
@@ -137,18 +137,18 @@ final class GraphEdge {
      * @author Julie Djeffal (193164)
      *
      */
-    public static class Builder{
+    public static class Builder {
         private final Stop destination;
         private int walkingTime;
         private final Set<Integer> packedTrips;
 
-        /**
+        /** 
          * @param destination The destination
          */
-        public Builder(Stop destination){
-            this.destination=destination;
-            this.packedTrips=new HashSet<Integer>();
-            this.walkingTime=-1;
+        public Builder(Stop destination) {
+            this.destination = destination;
+            this.packedTrips = new HashSet<Integer>();
+            this.walkingTime = -1;
         }
 
         /**
@@ -156,11 +156,11 @@ final class GraphEdge {
          *      The walking time that we want to set
          * @return The builder in construction (this) so we can chain method calls
          */
-        public Builder setWalkingTime(int newWalkingTime){
-            if (newWalkingTime<-1){
+        public Builder setWalkingTime(int newWalkingTime) {
+            if (newWalkingTime < -1) {
                 throw new IllegalArgumentException("the walking time is smaller than -1");
             }
-            this.walkingTime=newWalkingTime;
+            this.walkingTime = newWalkingTime;
             return this;
         }
 
@@ -171,7 +171,7 @@ final class GraphEdge {
          *      The arrival time of the trip that we want to add
          * @return The builder in construction (this) so we can chain method calls
          */
-        public Builder addTrip(int departureTime, int arrivalTime){
+        public Builder addTrip(int departureTime, int arrivalTime) {
             packedTrips.add(packTrip(departureTime, arrivalTime));
             return this;
         }
@@ -179,7 +179,7 @@ final class GraphEdge {
         /**
          * @return A graphEdge of the form of the graphEdge in construction
          */
-        public GraphEdge build(){
+        public GraphEdge build() {
             return new GraphEdge(this.destination, this.walkingTime, this.packedTrips);
         }
 

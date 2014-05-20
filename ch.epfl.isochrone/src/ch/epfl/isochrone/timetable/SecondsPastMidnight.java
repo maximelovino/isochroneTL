@@ -10,12 +10,12 @@ import static ch.epfl.isochrone.math.Math.*;
  *
  */
 public final class SecondsPastMidnight {
-    public static final int INFINITE=200000;
+    public static final int INFINITE = 200000;
     
     /**
      * Empty constructor so that the class can't be instantiate
      */
-    private SecondsPastMidnight(){
+    private SecondsPastMidnight() {
         
     }
     
@@ -30,12 +30,12 @@ public final class SecondsPastMidnight {
      * @throws IllegalArgumentException
      *      If hours are not in [0,30[ or minutes or seconds are not in [0,60[
      */
-    public static int fromHMS(int hours, int minutes, int seconds) throws IllegalArgumentException{
-        if(hours<0||hours>=30||minutes<0||minutes>=60||seconds<0||seconds>=60){
+    public static int fromHMS(int hours, int minutes, int seconds) throws IllegalArgumentException {
+        if (hours < 0 || hours >= 30 || minutes < 0 || minutes >= 60 || seconds < 0 || seconds >= 60) {
             throw new IllegalArgumentException("the time is invalid");
         }
         
-        int s=hours*3600+minutes*60+seconds;
+        int s = hours * 3600 + minutes * 60 + seconds;
         return s;
     }
     
@@ -45,8 +45,8 @@ public final class SecondsPastMidnight {
      * @return The number of seconds passed since midnight
      */
     @SuppressWarnings("deprecation")
-    public static int fromJavaDate(java.util.Date date){
-        return fromHMS(date.getHours(),date.getMinutes(),date.getSeconds());
+    public static int fromJavaDate(java.util.Date date) {
+        return fromHMS(date.getHours(), date.getMinutes(), date.getSeconds());
     }
     
     /**
@@ -56,12 +56,12 @@ public final class SecondsPastMidnight {
      * @throws IllegalArgumentException
      *      If the time exceeds 29:59:59
      */
-    public static int hours(int spm) throws IllegalArgumentException{
-        if(spm<0||spm>fromHMS(29,59,59)){
+    public static int hours(int spm) throws IllegalArgumentException {
+        if (spm < 0 || spm > fromHMS(29, 59, 59)) {
             throw new IllegalArgumentException("the time is invalid");
         }
         
-        return divF(spm,3600);
+        return divF(spm, 3600);
     }
     
     /**
@@ -71,11 +71,11 @@ public final class SecondsPastMidnight {
      * @throws IllegalArgumentException
      *      If the time exceeds 29:59:59
      */
-    public static int minutes(int spm){
-        if(spm<0||spm>fromHMS(29,59,59)){
+    public static int minutes(int spm) {
+        if (spm < 0 || spm > fromHMS(29, 59, 59)) {
             throw new IllegalArgumentException("the time is invalid");
         }
-        return divF(modF(spm,3600),60);
+        return divF(modF(spm, 3600), 60);
     }
     
     /**
@@ -85,8 +85,8 @@ public final class SecondsPastMidnight {
      * @throws IllegalArgumentException
      *      If the time exceeds 29:59:59
      */
-    public static int seconds(int spm){
-        if(spm<0||spm>fromHMS(29,59,59)){
+    public static int seconds(int spm) {
+        if (spm < 0 || spm > fromHMS(29, 59, 59)) {
             throw new IllegalArgumentException("the time is invalid");
         }        
         return spm%60;
@@ -98,6 +98,6 @@ public final class SecondsPastMidnight {
      * @return A string of the time in the format hh:mm:ss
      */
     public static String toString(int spm){
-        return String.format("%02d:%02d:%02d", hours(spm),minutes(spm),seconds(spm));
+        return String.format("%02d:%02d:%02d", hours(spm), minutes(spm), seconds(spm));
     }
 }

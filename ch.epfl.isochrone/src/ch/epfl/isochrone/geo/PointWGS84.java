@@ -12,7 +12,7 @@ import static ch.epfl.isochrone.math.Math.*;
  * @author Julie Djeffal (193164)
  */
 public final class PointWGS84 {
-    private final static int R=6378137;
+    private final static int R = 6378137;
     private final double longitude;
     private final double latitude;
 
@@ -22,28 +22,29 @@ public final class PointWGS84 {
      * @param latitude
      *      The latitude of the point
      * @throws IllegalArgumentException
-     *      If the latitude is not in [-PI/2,PI/2] or the longitude is not in [-PI,PI]
+     *      If the latitude is not in [-PI/2,PI/2] 
+     *      or the longitude is not in [-PI,PI]
      */
-    public PointWGS84(double longitude, double latitude) throws IllegalArgumentException{
-        if(longitude<-1*(PI)||longitude>PI||latitude<-1*(PI/2)||latitude>(PI/2)){
+    public PointWGS84(double longitude, double latitude) throws IllegalArgumentException {
+        if (longitude < -1 * (PI) || longitude > PI || latitude < -1 * (PI / 2) || latitude > (PI / 2)) {
             throw new IllegalArgumentException("invalid arguments for the creation of a WGS84 point");
         }
         
-        this.latitude=latitude;
-        this.longitude=longitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
     
     /**
      * @return The longitude of the point
      */
-    public double longitude(){
+    public double longitude() {
         return longitude;
     }
     
     /**
      * @return The latitude of the point
      */
-    public double latitude(){
+    public double latitude() {
         return latitude;
     }
     
@@ -52,8 +53,8 @@ public final class PointWGS84 {
      *      The point that we want to know the distance to
      * @return The distance between this point and the one in parameter(that)
      */
-    public double distanceTo(PointWGS84 that){
-        double distance=2*R*asin(sqrt(haversin(latitude-that.latitude())+cos(latitude)*cos(that.latitude())*haversin(longitude-that.longitude())));
+    public double distanceTo(PointWGS84 that) {
+        double distance = 2 * R * asin(sqrt(haversin(latitude - that.latitude()) + cos(latitude) * cos(that.latitude()) * haversin(longitude - that.longitude())));
         return distance;
     }
     
@@ -65,15 +66,15 @@ public final class PointWGS84 {
      *      If zoom is negative
      */
     public PointOSM toOSM(int zoom) throws IllegalArgumentException{
-        if(zoom<0){
+        if (zoom < 0) {
             throw new IllegalArgumentException("invalid zoom level");
         }
         
-        int s=(int)pow(2, zoom+8);
-        double x=(s/(2*PI))*(longitude+PI);
-        double y=(s/(2*PI))*(PI-asinh(tan(latitude)));
+        int s = (int) pow(2, zoom + 8);
+        double x = (s / (2 * PI)) * (longitude + PI);
+        double y = (s / (2 * PI)) * (PI - asinh(tan(latitude)));
         
-        return new PointOSM(zoom,x,y);        
+        return new PointOSM(zoom, x, y);        
     }
     
 
@@ -81,7 +82,7 @@ public final class PointWGS84 {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString(){
-        return "("+toDegrees(longitude)+","+toDegrees(latitude)+")";        
+    public String toString() {
+        return "(" + toDegrees(longitude) + "," + toDegrees(latitude) + ")";        
     }
 }

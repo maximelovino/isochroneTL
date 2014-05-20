@@ -20,22 +20,22 @@ public final class Stop {
      * @param position
      *      The position in the WGS84 coordinates
      */
-    public Stop(String name, PointWGS84 position){
-        this.name=name;
-        this.position=position;
+    public Stop(String name, PointWGS84 position) {
+        this.name = name;
+        this.position = position;
     }
     
     /**
      * @return The name of the stop
      */
-    public String name(){
+    public String name() {
         return name;
     }
     
     /**
      * @return The position of the stop as WGS84 point
      */
-    public PointWGS84 position(){
+    public PointWGS84 position() {
         return position;
     }
     
@@ -43,7 +43,7 @@ public final class Stop {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }
