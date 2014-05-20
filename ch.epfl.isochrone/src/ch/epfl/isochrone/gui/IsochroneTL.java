@@ -57,19 +57,31 @@ public final class IsochroneTL {
     private static final double WALKING_SPEED = 1.25;
 
     private final TiledMapComponent tiledMapComponent;
+    private final Set<Stop> stops;
+    private final TimeTable table;
+    private final TimeTableReader reader;
     private Point mouseStartPosition;
     private Point viewPosition;
+
+    private Date actualDate=INITIAL_DATE;
+    private Set<Service> services;
+    private Graph graph;
+    private int actualTime=INITIAL_DEPARTURE_TIME;
+    private FastestPathTree path;
+    private Stop startingStop;
+    private IsochroneTileProvider isoTP;
+    private final ColorTable colors;
+    private final ArrayList<Color> colorsList;
+    private TransparentTileProvider transTP;
 
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
 
-        TimeTableReader reader=new TimeTableReader("/time-table/");
-        TimeTable table=reader.readTimeTable();
-        Set<Service> services=table.servicesForDate(INITIAL_DATE);
-        Set<Stop> stops=table.stops();
-
-        Stop startingStop=null;
+        reader=new TimeTableReader("/time-table/");
+        table=reader.readTimeTable();
+        services=table.servicesForDate(INITIAL_DATE);
+        stops=table.stops();
 
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
@@ -77,15 +89,15 @@ public final class IsochroneTL {
             if(stop.name().equals(INITIAL_STARTING_STOP_NAME)){
                 startingStop=stop;
             }
-
         }
 
-        Graph graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
 
-        FastestPathTree path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
+        graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+
+        path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
 
 
-        ArrayList<Color> colorsList=new ArrayList<Color>();
+        colorsList=new ArrayList<Color>();
 
         colorsList.add(new Color(255,0,0));
         colorsList.add(new Color(255, 128, 0));
@@ -97,11 +109,11 @@ public final class IsochroneTL {
         colorsList.add(new Color(0, 0, 128));
         colorsList.add(new Color(0, 0, 0));
 
-        ColorTable colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
+        colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
 
-        IsochroneTileProvider isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
+        isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
 
-        TransparentTileProvider transTP=new TransparentTileProvider(0.5, isoTP);
+        transTP=new TransparentTileProvider(0.5, isoTP);
 
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
@@ -229,5 +241,56 @@ public final class IsochroneTL {
                 }
             }
         });
+    }
+
+    private void setDate(Date date) throws IOException{
+        if(!date.equals(actualDate)){
+            actualDate=date;
+            updateServices();
+        }
+    }
+
+    private void updateServices() throws IOException{
+        Set<Service> servicesTemp=table.servicesForDate(actualDate);
+
+        if(!servicesTemp.equals(services)){
+            services=servicesTemp;
+            updateGraph();
+        }
+    }
+
+    private void updateGraph() throws IOException{
+        graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+    }
+
+    private void setTime(int time){
+        if(time!=actualTime){
+            actualTime=time;
+            updatePath();
+        }
+    }
+
+    private void updatePath(){
+        path=graph.fastestPath(startingStop, actualTime);
+        updateIsoMap();
+    }
+
+    private void updateIsoMap(){
+        isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
+        transTP=new TransparentTileProvider(0.5, isoTP);
+    }
+
+    private void setStop(String stopName){
+        if(!stopName.equals(startingStop.name())){
+            for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
+                Stop stop = (Stop) iterator.next();
+
+                if(stop.name().equals(stopName)){
+                    startingStop=stop;
+                    updatePath();
+                }
+            }
+
+        }
     }
 }
