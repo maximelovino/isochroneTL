@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public final class TransparentTileProvider extends FilteringTileProvider {
     
     private final double alphaChannel;
-    private final TileProvider tp;
+    private TileProvider tp;
     
     /**
      * @param alphaChannel
@@ -26,6 +26,10 @@ public final class TransparentTileProvider extends FilteringTileProvider {
         }
         this.tp=tp;
         this.alphaChannel=alphaChannel;
+    }
+    
+    public void setTileProvider(TileProvider tileP){
+        this.tp=tileP;
     }
 
     /* (non-Javadoc)

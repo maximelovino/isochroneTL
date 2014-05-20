@@ -69,20 +69,18 @@ public final class IsochroneTL {
     private int actualTime=INITIAL_DEPARTURE_TIME;
     private FastestPathTree path;
     private Stop startingStop;
-    private IsochroneTileProvider isoTP;
+    private final IsochroneTileProvider isoTP;
     private final ColorTable colors;
     private final ArrayList<Color> colorsList;
-    private TransparentTileProvider transTP;
+    private final TransparentTileProvider transTP;
 
     public IsochroneTL() throws IOException {
         TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
-
         reader=new TimeTableReader("/time-table/");
         table=reader.readTimeTable();
         services=table.servicesForDate(INITIAL_DATE);
         stops=table.stops();
-
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
 
@@ -90,15 +88,9 @@ public final class IsochroneTL {
                 startingStop=stop;
             }
         }
-
-
         graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
-
         path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
-
-
         colorsList=new ArrayList<Color>();
-
         colorsList.add(new Color(255,0,0));
         colorsList.add(new Color(255, 128, 0));
         colorsList.add(new Color(255, 255, 0));
@@ -108,13 +100,9 @@ public final class IsochroneTL {
         colorsList.add(new Color(0, 0, 255));
         colorsList.add(new Color(0, 0, 128));
         colorsList.add(new Color(0, 0, 0));
-
         colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
-
         isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
-
         transTP=new TransparentTileProvider(0.5, isoTP);
-
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
     }
@@ -276,8 +264,9 @@ public final class IsochroneTL {
     }
 
     private void updateIsoMap(){
-        isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
-        transTP=new TransparentTileProvider(0.5, isoTP);
+        isoTP.setPath(path);
+        transTP.setTileProvider(isoTP);
+        tiledMapComponent.repaint();
     }
 
     private void setStop(String stopName){
