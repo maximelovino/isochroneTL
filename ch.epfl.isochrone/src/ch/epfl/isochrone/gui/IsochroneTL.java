@@ -16,6 +16,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -32,9 +33,13 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JViewport;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import ch.epfl.isochrone.geo.PointOSM;
 import ch.epfl.isochrone.geo.PointWGS84;
@@ -241,10 +246,15 @@ public final class IsochroneTL {
         });
     }
 
-    private void setDate(Date date) throws IOException{
+    private void setDate(Date date){
         if(!date.equals(actualDate)){
             actualDate=date;
-            updateServices();
+            try {
+                updateServices();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
@@ -312,10 +322,25 @@ public final class IsochroneTL {
 
             }
         });
+        
+        SpinnerDateModel dateSpinner=new SpinnerDateModel(actualDate.toJavaDate(),null,null,Calendar.MINUTE);
+        
+        dateSpinner.addChangeListener(new ChangeListener() {
+            
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                SpinnerDateModel spinner=(SpinnerDateModel) e.getSource();
+                setDate(new Date(spinner.getDate()));
+                setTime(SecondsPastMidnight.fromJavaDate(spinner.getDate()));
+                
+            }
+        });
+        JSpinner dateSelector=new JSpinner(dateSpinner);
 
         headerPanel.add(departure);
         headerPanel.add(dropdown);
         headerPanel.add(divider);
+        headerPanel.add(dateSelector);
 
         return headerPanel;
 
