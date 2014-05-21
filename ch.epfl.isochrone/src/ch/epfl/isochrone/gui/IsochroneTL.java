@@ -3,8 +3,11 @@ package ch.epfl.isochrone.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -13,17 +16,21 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -81,6 +88,7 @@ public final class IsochroneTL {
         table=reader.readTimeTable();
         services=table.servicesForDate(INITIAL_DATE);
         stops=table.stops();
+        
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
 
@@ -213,6 +221,7 @@ public final class IsochroneTL {
 
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(createCenterPanel(), BorderLayout.CENTER);
+        frame.getContentPane().add(createHeaderPanel(), BorderLayout.PAGE_START);
 
         frame.pack();
         frame.setVisible(true);
@@ -269,17 +278,38 @@ public final class IsochroneTL {
         tiledMapComponent.repaint();
     }
 
-    private void setStop(String stopName){
-        if(!stopName.equals(startingStop.name())){
-            for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
-                Stop stop = (Stop) iterator.next();
-
-                if(stop.name().equals(stopName)){
-                    startingStop=stop;
-                    updatePath();
-                }
-            }
-
+    private void setStop(Stop newStop){
+        if(!newStop.equals(startingStop)){
+            startingStop=newStop;
+            updatePath();
         }
     }
+
+    private JPanel createHeaderPanel(){
+        JPanel headerPanel=new JPanel(new FlowLayout());
+
+        JLabel departure=new JLabel("Départ:");
+        JSeparator divider=new JSeparator();
+        JComboBox<Stop> dropdown=new JComboBox<>(new Vector<>(stops));
+
+        dropdown.setSelectedItem(startingStop);
+
+        dropdown.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox dropdown=(JComboBox) e.getSource();
+                setStop((Stop)dropdown.getSelectedItem());
+
+            }
+        });
+
+        headerPanel.add(departure);
+        headerPanel.add(dropdown);
+        headerPanel.add(divider);
+        
+        return headerPanel;
+
+    }
 }
+
