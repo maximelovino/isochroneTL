@@ -17,6 +17,7 @@ import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -88,7 +89,7 @@ public final class IsochroneTL {
         table=reader.readTimeTable();
         services=table.servicesForDate(INITIAL_DATE);
         stops=table.stops();
-        
+
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
 
@@ -290,7 +291,15 @@ public final class IsochroneTL {
 
         JLabel departure=new JLabel("Départ:");
         JSeparator divider=new JSeparator();
-        JComboBox<Stop> dropdown=new JComboBox<>(new Vector<>(stops));
+        Vector<Stop> stopsVector=new Vector<>(stops);
+        Collections.sort(stopsVector, new Comparator<Stop>() {
+
+            @Override
+            public int compare(Stop o1, Stop o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
+        JComboBox<Stop> dropdown=new JComboBox<>(stopsVector);
 
         dropdown.setSelectedItem(startingStop);
 
@@ -307,7 +316,7 @@ public final class IsochroneTL {
         headerPanel.add(departure);
         headerPanel.add(dropdown);
         headerPanel.add(divider);
-        
+
         return headerPanel;
 
     }
