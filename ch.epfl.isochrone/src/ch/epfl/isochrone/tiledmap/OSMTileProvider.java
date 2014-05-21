@@ -29,12 +29,12 @@ public final class OSMTileProvider implements TileProvider {
      */
     @Override
     public Tile tileAt(int zoom, int x, int y) {
-        int xt=(int)Math.floor(x/256);
-        int yt=(int)Math.floor(y/256);    
+        int xt = (int)Math.floor(x/256);
+        int yt = (int)Math.floor(y/256);    
         
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new URL(baseResourceName+"/"+zoom+"/"+x+"/"+y+".png"));
+            image = ImageIO.read(new URL(baseResourceName + "/" + zoom + "/" + x + "/" + y + ".png"));
         } catch (IOException e) {
             try {
                 image=ImageIO.read(getClass().getResource("/time-table/error-tile.png"));
@@ -43,7 +43,7 @@ public final class OSMTileProvider implements TileProvider {
             }
         }
                 
-        return new Tile(zoom,xt,yt,image);
+        return new Tile(zoom, xt, yt, image);
     }
 
 }

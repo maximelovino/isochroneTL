@@ -11,19 +11,19 @@ import ch.epfl.isochrone.geo.PointOSM;
  *
  */
 public final class TileCache {
-    private final Map<PointOSM, Tile> cache;
+    private final Map<Long, Tile> cache;
     private final int MAX_SIZE;
     
     /**
      * @param maxSize
      *      The max size of the cache
      */
-    public TileCache(int maxSize){
-        this.MAX_SIZE=maxSize;
-        this.cache=new LinkedHashMap<PointOSM, Tile>(){
+    public TileCache(int maxSize) {
+        this.MAX_SIZE = maxSize;
+        this.cache = new LinkedHashMap<Long, Tile>() {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<PointOSM, Tile> e){
-                return size()<MAX_SIZE;
+            protected boolean removeEldestEntry(Map.Entry<Long, Tile> e) {
+                return size() < MAX_SIZE;
             }
         };
     }
@@ -38,7 +38,7 @@ public final class TileCache {
      * @param tile 
      * 		The tile 
      */
-    public void put(int zoom, int x, int y, Tile tile){
+    public void put(int zoom, int x, int y, Tile tile) {
         cache.put(encodeCoordinates(zoom, x, y), tile);
     }
     
@@ -51,24 +51,27 @@ public final class TileCache {
      * 		The second coordinate
      * @return The tile associated by the coordinates if it exists
      */
-    public Tile get(int zoom, int x, int y){
-        Tile tile=cache.get(encodeCoordinates(zoom, x, y));
+    public Tile get(int zoom, int x, int y) {
+        Tile tile = cache.get(encodeCoordinates(zoom, x, y));
         
         return tile;
     }
     
     
-//    TODO: encode in a long
-    private static PointOSM encodeCoordinates(int zoom, int x, int y){
-//        Long encoded=new Long("0");
-//        
-//        encoded+=zoom;
-//        
-//        encoded=Long.valueOf(zoom) << 64;
-//        
-//        encoded+=int x;
-        
-        return new PointOSM(zoom, x, y);
+    /**
+     * @param zoom 
+     * 		Zoom of the OSM Point
+     * @param x
+     * 		First coordinate of the OSM Point
+     * @param y
+     * 		Second coordinate of the OSM Point
+     * @return
+     * 		The three parameters encoded in a Long
+     */
+    private static Long encodeCoordinates(int zoom, int x, int y) {
+    	Long encoded = new Long(x *  10000000 + y * 100 + zoom);
+    	
+        return encoded;
     }
 
 }

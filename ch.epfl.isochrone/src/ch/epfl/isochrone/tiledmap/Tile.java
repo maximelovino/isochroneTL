@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
  * @author Julie Djeffal (193164)
  *
  */
-public final class Tile{
+public final class Tile {
     private final BufferedImage image;
     private final int x;
     private final int y;
@@ -26,18 +26,18 @@ public final class Tile{
      * @param image
      * 		The image of the Tile
      */
-    public Tile(int zoom, int x, int y, BufferedImage image){  
-        this.zoom=zoom;
-        this.x=x;
-        this.y=y;
+    public Tile(int zoom, int x, int y, BufferedImage image) {  
+        this.zoom = zoom;
+        this.x = x;
+        this.y = y;
         
-        this.image=image;
+        this.image = image;
     }
     
     /**
      * @return The image of the Tile
      */
-    public BufferedImage getImage(){
+    public BufferedImage getImage() {
         return this.image;
     }
 }

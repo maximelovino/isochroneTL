@@ -22,13 +22,13 @@ public final class ColorTable {
      * @throws IllegalArgumentException
      *      If the list of colors is empty
      */
-    public ColorTable(int sliceLength, List<Color> colors){
-        if(colors.isEmpty()){
+    public ColorTable(int sliceLength, List<Color> colors) {
+        if (colors.isEmpty()) {
             throw new IllegalArgumentException("the color table is empty");
         }
         
-        this.sliceLength=sliceLength;
-        this.colors=new ArrayList<Color>(colors);
+        this.sliceLength = sliceLength;
+        this.colors = new ArrayList<Color>(colors);
     }
     
     
@@ -37,10 +37,10 @@ public final class ColorTable {
      * 		A slice number
      * @return  the color associated to a slice (null if it doesn't exist)
      */
-    public Color colorForSlice(int sliceNum){
-        if(sliceNum<colors.size()-1){
+    public Color colorForSlice(int sliceNum) {
+        if (sliceNum < colors.size() - 1) {
             return colors.get(sliceNum);
-        }else{
+        } else {
             return null;
         }
     }
@@ -49,14 +49,14 @@ public final class ColorTable {
     /**
      * @return The number of slices
      */
-    public int slicesNumber(){
+    public int slicesNumber() {
         return colors.size();
     }
     
     /**
      * @return The length of the slice
      */
-    public int slicesLength(){
+    public int slicesLength() {
         return sliceLength;        
     }
 

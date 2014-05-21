@@ -15,9 +15,9 @@ public final class CachedTileProvider implements TileProvider {
      * @param cacheSize
      * 		The size of the TileCahe
      */
-    public CachedTileProvider(OSMTileProvider osmTiles, int cacheSize){
-        this.osmTiles=osmTiles;
-        this.cache=new TileCache(cacheSize);
+    public CachedTileProvider(OSMTileProvider osmTiles, int cacheSize) {
+        this.osmTiles = osmTiles;
+        this.cache = new TileCache(cacheSize);
     }
 
     /* (non-Javadoc)
@@ -25,10 +25,10 @@ public final class CachedTileProvider implements TileProvider {
      */
     @Override
     public Tile tileAt(int zoom, int x, int y) {
-        Tile tile=cache.get(zoom, x, y);
+        Tile tile = cache.get(zoom, x, y);
         
-        if(tile==null){
-            tile=osmTiles.tileAt(zoom, x, y);
+        if (tile == null) {
+            tile = osmTiles.tileAt(zoom, x, y);
             cache.put(zoom, x, y, tile);
         }
         return tile;
