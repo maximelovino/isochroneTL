@@ -23,7 +23,7 @@ public final class TileCache {
         this.cache = new LinkedHashMap<Long, Tile>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Long, Tile> e) {
-                return size() < MAX_SIZE;
+                return size() > MAX_SIZE;
             }
         };
     }
