@@ -187,8 +187,8 @@ public final class IsochroneTL {
 
                 if(newZoom>19)
                     newZoom=19;
-                if(newZoom<10)
-                    newZoom=10;
+                if(newZoom<11)
+                    newZoom=11;
 
                 point=point.atZoom(newZoom);
                 tiledMapComponent.setZoom(newZoom);
