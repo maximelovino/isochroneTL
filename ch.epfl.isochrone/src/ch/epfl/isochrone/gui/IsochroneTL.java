@@ -323,7 +323,7 @@ public final class IsochroneTL {
             }
         });
         
-        SpinnerDateModel dateSpinner=new SpinnerDateModel(actualDate.toJavaDate(),null,null,Calendar.MINUTE);
+        SpinnerDateModel dateSpinner=new SpinnerDateModel();
         
         dateSpinner.addChangeListener(new ChangeListener() {
             
@@ -335,6 +335,14 @@ public final class IsochroneTL {
                 
             }
         });
+        
+        java.util.Date javaDate=actualDate.toJavaDate();
+        javaDate.setHours(SecondsPastMidnight.hours(actualTime));
+        javaDate.setMinutes(SecondsPastMidnight.minutes(actualTime));
+        javaDate.setSeconds(SecondsPastMidnight.seconds(actualTime));
+        dateSpinner.setValue(javaDate);
+        
+        
         JSpinner dateSelector=new JSpinner(dateSpinner);
 
         headerPanel.add(departure);
