@@ -269,6 +269,7 @@ public final class IsochroneTL {
 
     private void updateGraph() throws IOException{
         graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+        updatePath();
     }
 
     private void setTime(int time){
@@ -285,7 +286,6 @@ public final class IsochroneTL {
 
     private void updateIsoMap(){
         isoTP.setPath(path);
-        transTP.setTileProvider(isoTP);
         tiledMapComponent.repaint();
     }
 
