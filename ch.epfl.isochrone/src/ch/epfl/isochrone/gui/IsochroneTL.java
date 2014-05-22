@@ -59,6 +59,11 @@ import ch.epfl.isochrone.timetable.Stop;
 import ch.epfl.isochrone.timetable.TimeTable;
 import ch.epfl.isochrone.timetable.TimeTableReader;
 
+/**
+ * @author Maxime Lovino (236726)
+ * @author Julie Djeffal (193164)
+ *
+ */
 public final class IsochroneTL {
     private static final String OSM_TILE_URL = "http://b.tile.openstreetmap.org/";
     private static final int INITIAL_ZOOM = 11;
@@ -87,25 +92,28 @@ public final class IsochroneTL {
     private final ArrayList<Color> colorsList;
     private final TransparentTileProvider transTP;
 
+    /**
+     * @throws IOException
+     */
     public IsochroneTL() throws IOException {
-        TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL),100);
+        TileProvider bgTileProvider = new CachedTileProvider(new OSMTileProvider(OSM_TILE_URL), 100);
         tiledMapComponent = new TiledMapComponent(INITIAL_ZOOM);
-        reader=new TimeTableReader("/time-table/");
-        table=reader.readTimeTable();
-        services=table.servicesForDate(INITIAL_DATE);
-        stops=table.stops();
+        reader = new TimeTableReader("/time-table/");
+        table = reader.readTimeTable();
+        services = table.servicesForDate(INITIAL_DATE);
+        stops = table.stops();
 
         for (Iterator<Stop> iterator = stops.iterator(); iterator.hasNext();) {
             Stop stop = (Stop) iterator.next();
 
-            if(stop.name().equals(INITIAL_STARTING_STOP_NAME)){
-                startingStop=stop;
+            if (stop.name().equals(INITIAL_STARTING_STOP_NAME)){
+                startingStop = stop;
             }
         }
-        graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
-        path=graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
-        colorsList=new ArrayList<Color>();
-        colorsList.add(new Color(255,0,0));
+        graph = reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+        path = graph.fastestPath(startingStop, INITIAL_DEPARTURE_TIME);
+        colorsList = new ArrayList<Color>();
+        colorsList.add(new Color(255, 0, 0));
         colorsList.add(new Color(255, 128, 0));
         colorsList.add(new Color(255, 255, 0));
         colorsList.add(new Color(128, 255, 0));
@@ -114,13 +122,16 @@ public final class IsochroneTL {
         colorsList.add(new Color(0, 0, 255));
         colorsList.add(new Color(0, 0, 128));
         colorsList.add(new Color(0, 0, 0));
-        colors=new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
-        isoTP=new IsochroneTileProvider(path, colors, WALKING_SPEED);
-        transTP=new TransparentTileProvider(0.5, isoTP);
+        colors = new ColorTable(SecondsPastMidnight.fromHMS(0, 5, 0), colorsList);
+        isoTP = new IsochroneTileProvider(path, colors, WALKING_SPEED);
+        transTP = new TransparentTileProvider(0.5, isoTP);
         tiledMapComponent.addTileProvider(bgTileProvider);
         tiledMapComponent.addTileProvider(transTP);
     }
 
+    /**
+     * @return a center panel 
+     */
     private JComponent createCenterPanel() {
         final JViewport viewPort = new JViewport();
         viewPort.setView(tiledMapComponent);
@@ -152,24 +163,24 @@ public final class IsochroneTL {
 
             @Override
             public void mousePressed(MouseEvent e){
-                mouseStartPosition=e.getLocationOnScreen();
-                viewPosition=viewPort.getViewPosition();
+                mouseStartPosition = e.getLocationOnScreen();
+                viewPosition = viewPort.getViewPosition();
             }
         });
 
         layeredPane.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){
-                int x=(int) Math.round(e.getLocationOnScreen().getX());
-                int y=(int) Math.round(e.getLocationOnScreen().getY());
+                int x = (int) Math.round(e.getLocationOnScreen().getX());
+                int y = (int) Math.round(e.getLocationOnScreen().getY());
 
-                int windowX=(int) Math.round(viewPosition.getX());
-                int windowY=(int) Math.round(viewPosition.getY());
+                int windowX = (int) Math.round(viewPosition.getX());
+                int windowY = (int) Math.round(viewPosition.getY());
 
-                int mouseX=(int) Math.round(mouseStartPosition.getX());
-                int mouseY=(int) Math.round(mouseStartPosition.getY());
+                int mouseX = (int) Math.round(mouseStartPosition.getX());
+                int mouseY = (int) Math.round(mouseStartPosition.getY());
 
-                Point point=new Point(windowX-x+mouseX, windowY-y+mouseY);
+                Point point = new Point(windowX - x + mouseX, windowY - y + mouseY);
                 viewPort.setViewPosition(point);
             }
         });
@@ -179,20 +190,20 @@ public final class IsochroneTL {
 
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                int rotation=e.getWheelRotation();
-                mouseStartPosition=e.getPoint();
-                Point view=viewPort.getViewPosition().getLocation();
-                int newZoom=tiledMapComponent.zoom()-rotation;
-                PointOSM point=new PointOSM(tiledMapComponent.zoom(), view.getX()+mouseStartPosition.getX(), view.getY()+mouseStartPosition.getY());
+                int rotation = e.getWheelRotation();
+                mouseStartPosition = e.getPoint();
+                Point view = viewPort.getViewPosition().getLocation();
+                int newZoom = tiledMapComponent.zoom() - rotation;
+                PointOSM point = new PointOSM(tiledMapComponent.zoom(), view.getX() + mouseStartPosition.getX(), view.getY() + mouseStartPosition.getY());
 
-                if(newZoom>19)
-                    newZoom=19;
-                if(newZoom<11)
-                    newZoom=11;
+                if (newZoom > 19)
+                    newZoom = 19;
+                if (newZoom < 11)
+                    newZoom = 11;
 
-                point=point.atZoom(newZoom);
+                point = point.atZoom(newZoom);
                 tiledMapComponent.setZoom(newZoom);
-                Point pointView=new Point((int)Math.round(point.roundedX()-mouseStartPosition.getX()), (int) Math.round(point.roundedY()-mouseStartPosition.getY()));
+                Point pointView = new Point((int) Math.round(point.roundedX() - mouseStartPosition.getX()), (int) Math.round(point.roundedY() - mouseStartPosition.getY()));
                 viewPort.setViewPosition(pointView);
 
             }
@@ -206,6 +217,9 @@ public final class IsochroneTL {
         return centerPanel;
     }
 
+    /**
+     * @return a Copyright panel
+     */
     private JPanel createCopyrightPanel() {
         Icon tlIcon = new ImageIcon(getClass().getResource("/images/tl-logo.png"));
         String copyrightText = "Données horaires 2013. Source : Transports publics de la région lausannoise / Carte : © contributeurs d'OpenStreetMap";
@@ -221,6 +235,7 @@ public final class IsochroneTL {
         return copyrightPanel;
     }
 
+    
     private void start() {
         JFrame frame = new JFrame("Isochrone TL");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -246,62 +261,82 @@ public final class IsochroneTL {
         });
     }
 
-    private void setDate(Date date){
-        if(!date.equals(actualDate)){
-            actualDate=date;
+    /**
+     * @param date
+     * 		A new actual date
+     */
+    private void setDate(Date date) {
+        if (!date.equals(actualDate)) {
+            actualDate = date;
             try {
                 updateServices();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
     }
 
-    private void updateServices() throws IOException{
-        Set<Service> servicesTemp=table.servicesForDate(actualDate);
+    /**
+     * @throws IOException
+     */
+    private void updateServices() throws IOException {
+        Set<Service> servicesTemp = table.servicesForDate(actualDate);
 
-        if(!servicesTemp.equals(services)){
-            services=servicesTemp;
+        if (!servicesTemp.equals(services)) {
+            services = servicesTemp;
             updateGraph();
         }
     }
 
-    private void updateGraph() throws IOException{
-        graph=reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
+    /**
+     * @throws IOException
+     */
+    private void updateGraph() throws IOException {
+        graph = reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
         updatePath();
     }
 
-    private void setTime(int time){
-        if(time!=actualTime){
-            actualTime=time;
+    /**
+     * @param time
+     * 		the new actual time
+     */
+    private void setTime(int time) {
+        if (time != actualTime) {
+            actualTime = time;
             updatePath();
         }
     }
 
-    private void updatePath(){
-        path=graph.fastestPath(startingStop, actualTime);
+    private void updatePath() {
+        path = graph.fastestPath(startingStop, actualTime);
         updateIsoMap();
     }
 
-    private void updateIsoMap(){
+    private void updateIsoMap() {
         isoTP.setPath(path);
         tiledMapComponent.repaint();
     }
 
-    private void setStop(Stop newStop){
-        if(!newStop.equals(startingStop)){
-            startingStop=newStop;
+    /**
+     * @param newStop 
+     * 		A new starting stop
+     */
+    private void setStop(Stop newStop) {
+        if ( !newStop.equals(startingStop)) {
+            startingStop = newStop;
             updatePath();
         }
     }
 
-    private JPanel createHeaderPanel(){
-        JPanel headerPanel=new JPanel(new FlowLayout());
+    /**
+     * @return a Header Panel
+     */
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new FlowLayout());
 
-        JLabel departure=new JLabel("Départ:");
-        JSeparator divider=new JSeparator();
-        Vector<Stop> stopsVector=new Vector<>(stops);
+        JLabel departure = new JLabel("Départ:");
+        JSeparator divider = new JSeparator();
+        Vector<Stop> stopsVector = new Vector<>(stops);
         Collections.sort(stopsVector, new Comparator<Stop>() {
 
             @Override
@@ -309,7 +344,7 @@ public final class IsochroneTL {
                 return o1.name().compareTo(o2.name());
             }
         });
-        JComboBox<Stop> dropdown=new JComboBox<>(stopsVector);
+        JComboBox<Stop> dropdown = new JComboBox<>(stopsVector);
 
         dropdown.setSelectedItem(startingStop);
 
@@ -317,19 +352,19 @@ public final class IsochroneTL {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox dropdown=(JComboBox) e.getSource();
+                JComboBox dropdown = (JComboBox) e.getSource();
                 setStop((Stop)dropdown.getSelectedItem());
 
             }
         });
         
-        SpinnerDateModel dateSpinner=new SpinnerDateModel();
+        SpinnerDateModel dateSpinner = new SpinnerDateModel();
         
         dateSpinner.addChangeListener(new ChangeListener() {
             
             @Override
             public void stateChanged(ChangeEvent e) {
-                SpinnerDateModel spinner=(SpinnerDateModel) e.getSource();
+                SpinnerDateModel spinner = (SpinnerDateModel) e.getSource();
                 setDate(new Date(spinner.getDate()));
                 setTime(SecondsPastMidnight.fromJavaDate(spinner.getDate()));
                 
@@ -343,7 +378,7 @@ public final class IsochroneTL {
         dateSpinner.setValue(javaDate);
         
         
-        JSpinner dateSelector=new JSpinner(dateSpinner);
+        JSpinner dateSelector = new JSpinner(dateSpinner);
 
         headerPanel.add(departure);
         headerPanel.add(dropdown);

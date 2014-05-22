@@ -35,6 +35,7 @@ public final class IsochroneTileProvider implements TileProvider {
     
     /**
      * @param newPath
+     * 		The Fastest path tree
      */
     public void setPath(FastestPathTree newPath) {
         this.path = newPath;
