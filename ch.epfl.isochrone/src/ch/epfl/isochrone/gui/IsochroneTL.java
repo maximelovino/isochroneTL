@@ -335,6 +335,7 @@ public final class IsochroneTL {
         JPanel headerPanel = new JPanel(new FlowLayout());
 
         JLabel departure = new JLabel("Départ:");
+        JLabel timeLabel=new JLabel("Date et heure");
         JSeparator divider = new JSeparator();
         Vector<Stop> stopsVector = new Vector<>(stops);
         Collections.sort(stopsVector, new Comparator<Stop>() {
@@ -383,6 +384,7 @@ public final class IsochroneTL {
         headerPanel.add(departure);
         headerPanel.add(dropdown);
         headerPanel.add(divider);
+        headerPanel.add(timeLabel);
         headerPanel.add(dateSelector);
 
         return headerPanel;
