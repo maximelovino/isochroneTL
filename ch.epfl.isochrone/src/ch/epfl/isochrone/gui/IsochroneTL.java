@@ -235,7 +235,7 @@ public final class IsochroneTL {
         return copyrightPanel;
     }
 
-    
+
     private void start() {
         JFrame frame = new JFrame("Isochrone TL");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -262,21 +262,6 @@ public final class IsochroneTL {
     }
 
     /**
-     * @param date
-     * 		A new actual date
-     */
-    private void setDate(Date date) {
-        if (!date.equals(actualDate)) {
-            actualDate = date;
-            try {
-                updateServices();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * @throws IOException
      */
     private void updateServices() throws IOException {
@@ -294,17 +279,6 @@ public final class IsochroneTL {
     private void updateGraph() throws IOException {
         graph = reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
         updatePath();
-    }
-
-    /**
-     * @param time
-     * 		the new actual time
-     */
-    private void setTime(int time) {
-        if (time != actualTime) {
-            actualTime = time;
-            updatePath();
-        }
     }
 
     private void updatePath() {
@@ -325,6 +299,30 @@ public final class IsochroneTL {
         if ( !newStop.equals(startingStop)) {
             startingStop = newStop;
             updatePath();
+        }
+    }
+
+    private void setDateAndTime(java.util.Date date){
+        int timeTemp=SecondsPastMidnight.fromJavaDate(date);
+        Date dateTemp=new Date(date);
+
+        if(timeTemp<SecondsPastMidnight.fromHMS(4, 0, 0)){
+            timeTemp+=SecondsPastMidnight.fromHMS(24, 0, 0);
+            dateTemp=dateTemp.relative(-1);
+        }
+
+        if (timeTemp != actualTime) {
+            actualTime = timeTemp;
+            updatePath();
+        }
+
+        if (!dateTemp.equals(actualDate)) {
+            actualDate = dateTemp;
+            try {
+                updateServices();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -358,27 +356,26 @@ public final class IsochroneTL {
 
             }
         });
-        
+
         SpinnerDateModel dateSpinner = new SpinnerDateModel();
-        
+
         dateSpinner.addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 SpinnerDateModel spinner = (SpinnerDateModel) e.getSource();
-                setDate(new Date(spinner.getDate()));
-                setTime(SecondsPastMidnight.fromJavaDate(spinner.getDate()));
-                
+                setDateAndTime(spinner.getDate());
+
             }
         });
-        
+
         java.util.Date javaDate=actualDate.toJavaDate();
         javaDate.setHours(SecondsPastMidnight.hours(actualTime));
         javaDate.setMinutes(SecondsPastMidnight.minutes(actualTime));
         javaDate.setSeconds(SecondsPastMidnight.seconds(actualTime));
         dateSpinner.setValue(javaDate);
-        
-        
+
+
         JSpinner dateSelector = new JSpinner(dateSpinner);
 
         headerPanel.add(departure);
