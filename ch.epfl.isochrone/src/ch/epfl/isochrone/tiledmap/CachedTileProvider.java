@@ -8,12 +8,12 @@ package ch.epfl.isochrone.tiledmap;
 public final class CachedTileProvider implements TileProvider {
     private final OSMTileProvider osmTiles;
     private final TileCache cache;
-    
+
     /**
      * @param osmTiles
-     * 		The Address of the server
+     * 		An OSM tile provider that we want to cache
      * @param cacheSize
-     * 		The size of the TileCahe
+     * 		The size of the TileCache
      */
     public CachedTileProvider(OSMTileProvider osmTiles, int cacheSize) {
         this.osmTiles = osmTiles;
@@ -26,7 +26,7 @@ public final class CachedTileProvider implements TileProvider {
     @Override
     public Tile tileAt(int zoom, int x, int y) {
         Tile tile = cache.get(zoom, x, y);
-        
+        //if present in the cache, get it from there, otherwise get it from osm and put in the cache
         if (tile == null) {
             tile = osmTiles.tileAt(zoom, x, y);
             cache.put(zoom, x, y, tile);

@@ -16,7 +16,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -36,7 +35,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JViewport;
 import javax.swing.SpinnerDateModel;
-import javax.swing.SpinnerModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -130,7 +128,7 @@ public final class IsochroneTL {
     }
 
     /**
-     * @return a center panel 
+     * @return The center panel of our GUI 
      */
     private JComponent createCenterPanel() {
         final JViewport viewPort = new JViewport();
@@ -158,7 +156,7 @@ public final class IsochroneTL {
             }
         });
 
-
+        //listener for the mouse pressing
         layeredPane.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -167,7 +165,7 @@ public final class IsochroneTL {
                 viewPosition = viewPort.getViewPosition();
             }
         });
-
+        //listener for the mouse dragging, to control movement
         layeredPane.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e){
@@ -185,7 +183,7 @@ public final class IsochroneTL {
             }
         });
 
-
+        //listener for the mouse wheel, to control zoom
         layeredPane.addMouseWheelListener(new MouseWheelListener() {
 
             @Override
@@ -195,7 +193,7 @@ public final class IsochroneTL {
                 Point view = viewPort.getViewPosition().getLocation();
                 int newZoom = tiledMapComponent.zoom() - rotation;
                 PointOSM point = new PointOSM(tiledMapComponent.zoom(), view.getX() + mouseStartPosition.getX(), view.getY() + mouseStartPosition.getY());
-
+                //if the new zoom is invalid, the zoom is max/min zoom
                 if (newZoom > 19)
                     newZoom = 19;
                 if (newZoom < 11)
@@ -218,7 +216,7 @@ public final class IsochroneTL {
     }
 
     /**
-     * @return a Copyright panel
+     * @return The Copyright panel for our GUI
      */
     private JPanel createCopyrightPanel() {
         Icon tlIcon = new ImageIcon(getClass().getResource("/images/tl-logo.png"));
@@ -275,6 +273,7 @@ public final class IsochroneTL {
 
     /**
      * @throws IOException
+     *      depending on the reader for the graph
      */
     private void updateGraph() throws IOException {
         graph = reader.readGraphForServices(stops, services, WALKING_TIME, WALKING_SPEED);
@@ -327,8 +326,9 @@ public final class IsochroneTL {
     }
 
     /**
-     * @return a Header Panel
+     * @return The Header Panel for our GUI
      */
+    @SuppressWarnings("deprecation")
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new FlowLayout());
 
@@ -346,11 +346,12 @@ public final class IsochroneTL {
         JComboBox<Stop> dropdown = new JComboBox<>(stopsVector);
 
         dropdown.setSelectedItem(startingStop);
-
+        //listener for the selection of a stop
         dropdown.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                @SuppressWarnings("rawtypes")
                 JComboBox dropdown = (JComboBox) e.getSource();
                 setStop((Stop)dropdown.getSelectedItem());
 
@@ -358,7 +359,7 @@ public final class IsochroneTL {
         });
 
         SpinnerDateModel dateSpinner = new SpinnerDateModel();
-
+        //listener for the date spinner
         dateSpinner.addChangeListener(new ChangeListener() {
 
             @Override
@@ -377,7 +378,7 @@ public final class IsochroneTL {
 
 
         JSpinner dateSelector = new JSpinner(dateSpinner);
-
+        //assembling the header
         headerPanel.add(departure);
         headerPanel.add(dropdown);
         headerPanel.add(divider);

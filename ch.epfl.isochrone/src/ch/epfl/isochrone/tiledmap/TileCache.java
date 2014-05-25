@@ -3,8 +3,6 @@ package ch.epfl.isochrone.tiledmap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import ch.epfl.isochrone.geo.PointOSM;
-
 /**
  * @author Maxime Lovino (236726)
  * @author Julie Djeffal (193164)
@@ -18,6 +16,7 @@ public final class TileCache {
      * @param maxSize
      *      The max size of the cache
      */
+    @SuppressWarnings("serial")
     public TileCache(int maxSize) {
         this.MAX_SIZE = maxSize;
         this.cache = new LinkedHashMap<Long, Tile>() {

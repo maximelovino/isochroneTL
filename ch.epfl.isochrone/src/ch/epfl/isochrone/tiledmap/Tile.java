@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
  * @author Julie Djeffal (193164)
  *
  */
+@SuppressWarnings("unused")
 public final class Tile {
     private final BufferedImage image;
     private final int x;

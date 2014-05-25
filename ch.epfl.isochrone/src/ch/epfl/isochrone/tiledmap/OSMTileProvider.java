@@ -2,7 +2,6 @@ package ch.epfl.isochrone.tiledmap;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -13,9 +12,9 @@ import javax.imageio.ImageIO;
  *
  */
 public final class OSMTileProvider implements TileProvider {
-	
+
     private final String baseResourceName;
-    
+
     /**
      * @param baseResourceName
      * 		Address of the server
@@ -31,8 +30,10 @@ public final class OSMTileProvider implements TileProvider {
     public Tile tileAt(int zoom, int x, int y) {
         int xt = (int)Math.floor(x/256);
         int yt = (int)Math.floor(y/256);    
-        
+
         BufferedImage image = null;
+
+        //takes the error image if it can't reach the server
         try {
             image = ImageIO.read(new URL(baseResourceName + "/" + zoom + "/" + x + "/" + y + ".png"));
         } catch (IOException e) {
@@ -42,7 +43,7 @@ public final class OSMTileProvider implements TileProvider {
                 e1.printStackTrace();
             }
         }
-                
+
         return new Tile(zoom, xt, yt, image);
     }
 

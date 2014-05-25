@@ -16,7 +16,7 @@ public final class ColorTable {
     
     /**
      * @param sliceLength 
-     * 		Time (sec)
+     * 		Length of a slice
      * @param colors 
      * 		A list of colors
      * @throws IllegalArgumentException
@@ -35,7 +35,7 @@ public final class ColorTable {
     /**
      * @param sliceNum 
      * 		A slice number
-     * @return  the color associated to a slice (null if it doesn't exist)
+     * @return  the color associated to that slice (null if it doesn't exist)
      */
     public Color colorForSlice(int sliceNum) {
         if (sliceNum < colors.size() - 1) {
@@ -54,7 +54,7 @@ public final class ColorTable {
     }
     
     /**
-     * @return The length of the slice
+     * @return The length of a slice
      */
     public int slicesLength() {
         return sliceLength;        

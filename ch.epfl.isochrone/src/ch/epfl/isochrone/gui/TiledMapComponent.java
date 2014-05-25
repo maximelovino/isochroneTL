@@ -1,10 +1,11 @@
 package ch.epfl.isochrone.gui;
 
+import static ch.epfl.isochrone.math.Math.divF;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +14,13 @@ import javax.swing.JComponent;
 import ch.epfl.isochrone.geo.PointOSM;
 import ch.epfl.isochrone.tiledmap.TileProvider;
 
-import static ch.epfl.isochrone.math.Math.*;
-
-/**
+/**The component for our tiled map
+ * 
  * @author Maxime Lovino (236726)
  * @author Julie Djeffal (193164)
  *
  */
+@SuppressWarnings("serial")
 public final class TiledMapComponent extends JComponent {
     private int zoomLevel;
     private final List<TileProvider> providers;
@@ -97,7 +98,7 @@ public final class TiledMapComponent extends JComponent {
     
     /**
      * @param newZoom 
-     * 		A new zoom level
+     * 		A new zoom level that we want to set
      */
     public void setZoom(int newZoom) {
         if (zoomLevel < 10 || zoomLevel > 19) {

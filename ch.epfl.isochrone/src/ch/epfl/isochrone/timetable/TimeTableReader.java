@@ -5,17 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import ch.epfl.isochrone.geo.PointWGS84;
 import ch.epfl.isochrone.timetable.Date.DayOfWeek;
-import ch.epfl.isochrone.timetable.Service.Builder;
 
 /**
  * The class that will read our files

@@ -32,10 +32,10 @@ public final class IsochroneTileProvider implements TileProvider {
         this.colors = colors;
         this.walkingSpeed = walkingSpeed;
     }
-    
+
     /**
      * @param newPath
-     * 		The Fastest path tree
+     * 		The Fastest path tree that we want to set
      */
     public void setPath(FastestPathTree newPath) {
         this.path = newPath;
@@ -50,7 +50,7 @@ public final class IsochroneTileProvider implements TileProvider {
         BufferedImage i = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = i.createGraphics();
-
+        //calculation of the size of a pixel
         double xLength = (new PointOSM(zoom, x * 256, y * 256).toWGS84()).distanceTo(new PointOSM(zoom, x * 256 + 1, y * 256).toWGS84());
         double yLength = (new PointOSM(zoom, x * 256, y * 256).toWGS84()).distanceTo(new PointOSM(zoom, x * 256, y * 256 + 1).toWGS84());
 
@@ -63,7 +63,7 @@ public final class IsochroneTileProvider implements TileProvider {
                 if (timeRemainder > 0) {
                     PointOSM p = stop.position().toOSM(zoom);
 
-
+                    //coordinates of the circle that we are going to draw
                     double xCoordinate = p.x() - (walkingSpeed * timeRemainder / xLength) - new PointOSM(zoom, x * 256, y * 256).roundedX();
                     double yCoordinate = p.y() - (walkingSpeed * timeRemainder / yLength) - new PointOSM(zoom, x * 256, y * 256).roundedY();
 
