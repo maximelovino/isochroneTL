@@ -28,10 +28,6 @@ public final class TransparentTileProvider extends FilteringTileProvider {
         this.alphaChannel = alphaChannel;
     }
     
-    public void setTileProvider(TileProvider tileP) {
-        this.tp = tileP;
-    }
-
     /* (non-Javadoc)
      * @see ch.epfl.isochrone.tiledmap.TileProvider#tileAt(int, int, int)
      */
@@ -63,6 +59,10 @@ public final class TransparentTileProvider extends FilteringTileProvider {
         double b = (1 / 255.0) * modF(colorARGB, (int) Math.pow(2, 8));
         
         return (int) Math.pow(2, 24) * (int) Math.round(255 * a) + (int) Math.pow(2, 16) * (int) Math.round(255 * r) + (int) Math.pow(2, 8) * (int) Math.round(255 * g) + (int) Math.round(255 * b);
+    }
+
+    public void setTileProvider(TileProvider tileP) {
+        this.tp = tileP;
     }
 
 }

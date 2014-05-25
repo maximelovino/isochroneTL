@@ -260,11 +260,99 @@ public final class IsochroneTL {
     }
 
     /**
+     * @return The Header Panel for our GUI
+     */
+    @SuppressWarnings("deprecation")
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new FlowLayout());
+    
+        JLabel departure = new JLabel("Départ:");
+        JLabel timeLabel=new JLabel("Date et heure");
+        JSeparator divider = new JSeparator();
+        Vector<Stop> stopsVector = new Vector<>(stops);
+        Collections.sort(stopsVector, new Comparator<Stop>() {
+    
+            @Override
+            public int compare(Stop o1, Stop o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
+        JComboBox<Stop> dropdown = new JComboBox<>(stopsVector);
+    
+        dropdown.setSelectedItem(startingStop);
+        //listener for the selection of a stop
+        dropdown.addActionListener(new ActionListener() {
+    
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                @SuppressWarnings("rawtypes")
+                JComboBox dropdown = (JComboBox) e.getSource();
+                setStop((Stop)dropdown.getSelectedItem());
+    
+            }
+        });
+    
+        SpinnerDateModel dateSpinner = new SpinnerDateModel();
+        //listener for the date spinner
+        dateSpinner.addChangeListener(new ChangeListener() {
+    
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                SpinnerDateModel spinner = (SpinnerDateModel) e.getSource();
+                setDateAndTime(spinner.getDate());
+    
+            }
+        });
+    
+        java.util.Date javaDate=actualDate.toJavaDate();
+        javaDate.setHours(SecondsPastMidnight.hours(actualTime));
+        javaDate.setMinutes(SecondsPastMidnight.minutes(actualTime));
+        javaDate.setSeconds(SecondsPastMidnight.seconds(actualTime));
+        dateSpinner.setValue(javaDate);
+    
+    
+        JSpinner dateSelector = new JSpinner(dateSpinner);
+        //assembling the header
+        headerPanel.add(departure);
+        headerPanel.add(dropdown);
+        headerPanel.add(divider);
+        headerPanel.add(timeLabel);
+        headerPanel.add(dateSelector);
+    
+        return headerPanel;
+    
+    }
+
+    private void setDateAndTime(java.util.Date date){
+        int timeTemp=SecondsPastMidnight.fromJavaDate(date);
+        Date dateTemp=new Date(date);
+    
+        if(timeTemp<SecondsPastMidnight.fromHMS(4, 0, 0)){
+            timeTemp+=SecondsPastMidnight.fromHMS(24, 0, 0);
+            dateTemp=dateTemp.relative(-1);
+        }
+    
+        if (timeTemp != actualTime) {
+            actualTime = timeTemp;
+            updatePath();
+        }
+    
+        if (!dateTemp.equals(actualDate)) {
+            actualDate = dateTemp;
+            try {
+                updateServices();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * @throws IOException
      */
     private void updateServices() throws IOException {
         Set<Service> servicesTemp = table.servicesForDate(actualDate);
-
+    
         if (!servicesTemp.equals(services)) {
             services = servicesTemp;
             updateGraph();
@@ -280,16 +368,6 @@ public final class IsochroneTL {
         updatePath();
     }
 
-    private void updatePath() {
-        path = graph.fastestPath(startingStop, actualTime);
-        updateIsoMap();
-    }
-
-    private void updateIsoMap() {
-        isoTP.setPath(path);
-        tiledMapComponent.repaint();
-    }
-
     /**
      * @param newStop 
      * 		A new starting stop
@@ -301,92 +379,14 @@ public final class IsochroneTL {
         }
     }
 
-    private void setDateAndTime(java.util.Date date){
-        int timeTemp=SecondsPastMidnight.fromJavaDate(date);
-        Date dateTemp=new Date(date);
-
-        if(timeTemp<SecondsPastMidnight.fromHMS(4, 0, 0)){
-            timeTemp+=SecondsPastMidnight.fromHMS(24, 0, 0);
-            dateTemp=dateTemp.relative(-1);
-        }
-
-        if (timeTemp != actualTime) {
-            actualTime = timeTemp;
-            updatePath();
-        }
-
-        if (!dateTemp.equals(actualDate)) {
-            actualDate = dateTemp;
-            try {
-                updateServices();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void updatePath() {
+        path = graph.fastestPath(startingStop, actualTime);
+        updateIsoMap();
     }
 
-    /**
-     * @return The Header Panel for our GUI
-     */
-    @SuppressWarnings("deprecation")
-    private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout());
-
-        JLabel departure = new JLabel("Départ:");
-        JLabel timeLabel=new JLabel("Date et heure");
-        JSeparator divider = new JSeparator();
-        Vector<Stop> stopsVector = new Vector<>(stops);
-        Collections.sort(stopsVector, new Comparator<Stop>() {
-
-            @Override
-            public int compare(Stop o1, Stop o2) {
-                return o1.name().compareTo(o2.name());
-            }
-        });
-        JComboBox<Stop> dropdown = new JComboBox<>(stopsVector);
-
-        dropdown.setSelectedItem(startingStop);
-        //listener for the selection of a stop
-        dropdown.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                @SuppressWarnings("rawtypes")
-                JComboBox dropdown = (JComboBox) e.getSource();
-                setStop((Stop)dropdown.getSelectedItem());
-
-            }
-        });
-
-        SpinnerDateModel dateSpinner = new SpinnerDateModel();
-        //listener for the date spinner
-        dateSpinner.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                SpinnerDateModel spinner = (SpinnerDateModel) e.getSource();
-                setDateAndTime(spinner.getDate());
-
-            }
-        });
-
-        java.util.Date javaDate=actualDate.toJavaDate();
-        javaDate.setHours(SecondsPastMidnight.hours(actualTime));
-        javaDate.setMinutes(SecondsPastMidnight.minutes(actualTime));
-        javaDate.setSeconds(SecondsPastMidnight.seconds(actualTime));
-        dateSpinner.setValue(javaDate);
-
-
-        JSpinner dateSelector = new JSpinner(dateSpinner);
-        //assembling the header
-        headerPanel.add(departure);
-        headerPanel.add(dropdown);
-        headerPanel.add(divider);
-        headerPanel.add(timeLabel);
-        headerPanel.add(dateSelector);
-
-        return headerPanel;
-
+    private void updateIsoMap() {
+        isoTP.setPath(path);
+        tiledMapComponent.repaint();
     }
 }
 
